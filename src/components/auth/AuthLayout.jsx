@@ -15,7 +15,7 @@ const AuthLayout = ({ children }) => {
 
           <div className="absolute left-10 top-10 z-10">
             <span className="text-2xl font-semibold tracking-[0.25em] text-white">
-              AURELLE
+              J M S
             </span>
             <p className="mt-2 text-xs tracking-[0.2em] text-white/80">
               JEWELLERY, TIMELESSLY YOURS
@@ -53,7 +53,7 @@ const AuthLayout = ({ children }) => {
             {/* Mobile brand */}
             <div className="mb-12 text-center lg:hidden">
               <span className="text-xl font-semibold tracking-[0.25em] text-[#9B7847]">
-                AURELLE
+                J M S
               </span>
               <p className="mt-2 text-[10px] tracking-[0.2em] text-[#8E877D]">
                 JEWELLERY, TIMELESSLY YOURS
