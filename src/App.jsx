@@ -1,8 +1,8 @@
 
 import { Routes, Route } from "react-router-dom";
 
-import Sidebar from "./components/Sidebar";
-import Topbar from "./components/Topbar";
+import Sidebar from "./components/Common/Sidebar";
+import Topbar from "./components/Common/Topbar";
 import Dashboard from "./pages/Dashboard";
 import Products from "./pages/Products";
 import Inventory from "./pages/Inventory";
