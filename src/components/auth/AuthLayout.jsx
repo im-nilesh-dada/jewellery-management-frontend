@@ -1,44 +1,47 @@
 const AuthLayout = ({ children }) => {
   return (
-    <main className="min-h-screen bg-[#FAF8F4] p-3 sm:p-5 lg:p-8">
-      <div className="mx-auto grid min-h-[calc(100vh-24px)] max-w-[1440px] overflow-hidden rounded-2xl bg-white shadow-sm sm:min-h-[calc(100vh-40px)] lg:min-h-[calc(100vh-64px)] lg:grid-cols-2">
+    <main className="h-dvh overflow-hidden bg-[#FAF8F4] p-2 sm:p-3 lg:p-4">
+      <div className="mx-auto grid h-full max-w-[1600px] grid-cols-1 overflow-hidden rounded-xl bg-white shadow-sm lg:grid-cols-2">
 
-        {/* Jewellery visual panel */}
-        <section className="relative hidden min-h-[600px] overflow-hidden bg-[#D9C6A5] lg:block">
+        {/* Left: Jewellery Image */}
+        <section className="relative hidden min-h-0 overflow-hidden bg-[#D9C6A5] lg:block">
           <img
             src="https://images.unsplash.com/photo-1611652022419-a9419f74343d?auto=format&fit=crop&w=1400&q=85"
             alt="Elegant gold jewellery"
             className="absolute inset-0 h-full w-full object-cover"
           />
 
-          <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-black/15" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-black/20" />
 
-          <div className="absolute left-10 top-10 z-10">
-            <span className="text-2xl font-semibold tracking-[0.25em] text-white">
-              J M S
+          {/* Brand */}
+          <div className="absolute left-8 top-8 z-10 xl:left-12 xl:top-10">
+            <span className="text-xl font-semibold tracking-[0.25em] text-white xl:text-2xl">
+              JMS
             </span>
-            <p className="mt-2 text-xs tracking-[0.2em] text-white/80">
+
+            <p className="mt-2 text-[10px] tracking-[0.2em] text-white/80">
               JEWELLERY, TIMELESSLY YOURS
             </p>
           </div>
 
-          <div className="absolute bottom-12 left-10 right-10 z-10 text-white">
-            <p className="mb-4 text-xs uppercase tracking-[0.3em] text-white/80">
+          {/* Image Caption */}
+          <div className="absolute bottom-8 left-8 right-8 z-10 text-white xl:bottom-12 xl:left-12 xl:right-12">
+            <p className="mb-3 text-[10px] uppercase tracking-[0.3em] text-white/80 xl:text-xs">
               Crafted to be cherished
             </p>
 
-            <h2 className="max-w-lg font-serif text-4xl leading-tight xl:text-5xl">
+            <h2 className="max-w-lg font-serif text-3xl leading-tight xl:text-5xl">
               Every piece tells a story.
               <br />
               Make yours unforgettable.
             </h2>
 
-            <p className="mt-5 max-w-md text-sm leading-7 text-white/80">
+            <p className="mt-4 max-w-md text-xs leading-6 text-white/80 xl:text-sm">
               Discover timeless designs crafted to celebrate your most
               meaningful moments.
             </p>
 
-            <div className="mt-8 flex gap-2">
+            <div className="mt-6 flex gap-2">
               <span className="h-1 w-8 rounded-full bg-white" />
               <span className="h-1 w-4 rounded-full bg-white/50" />
               <span className="h-1 w-4 rounded-full bg-white/50" />
@@ -46,24 +49,27 @@ const AuthLayout = ({ children }) => {
           </div>
         </section>
 
-        {/* Form panel */}
-        <section className="flex min-h-[calc(100vh-24px)] items-center justify-center px-5 py-10 sm:px-10 lg:min-h-0 lg:px-12 xl:px-20">
+        {/* Right: Login Form */}
+        <section className="flex min-h-0 min-w-0 items-center justify-center overflow-hidden px-5 py-4 sm:px-10 lg:px-8 xl:px-16">
           <div className="w-full max-w-md">
 
-            {/* Mobile brand */}
-            <div className="mb-12 text-center lg:hidden">
+            {/* Mobile Brand */}
+            <div className="mb-7 text-center sm:mb-9 lg:hidden">
               <span className="text-xl font-semibold tracking-[0.25em] text-[#9B7847]">
-                J M S
+                JMS
               </span>
-              <p className="mt-2 text-[10px] tracking-[0.2em] text-[#8E877D]">
+
+              <p className="mt-1 text-[9px] tracking-[0.2em] text-[#8E877D]">
                 JEWELLERY, TIMELESSLY YOURS
               </p>
             </div>
 
+            {/* Page Content */}
             {children}
 
-            <p className="mt-12 text-center text-xs text-[#A7A096]">
-              © {new Date().getFullYear()} AURELLE. All rights reserved.
+            {/* Footer */}
+            <p className="mt-6 text-center text-[10px] text-[#A7A096] sm:mt-8">
+              © {new Date().getFullYear()} JMS. All rights reserved.
             </p>
           </div>
         </section>
