@@ -1,21 +1,56 @@
-function App() {
+
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+import Sidebar from "./components/Sidebar";
+import Topbar from "./components/Topbar";
+import Dashboard from "./pages/Dashboard";
+import Products from "./pages/Products";
+import Inventory from "./pages/Inventory";
+import MetalRates from "./pages/MetalRates";
+
+function AppLayout() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-950">
-      <div className="rounded-xl bg-white p-8 text-center shadow-lg">
-        <h1 className="text-3xl font-bold text-blue-600">
-          Tailwind CSS is Working!
-        </h1>
+    <div className="min-h-screen bg-[#faf9f6]">
+      {/* Fixed sidebar */}
+      <Sidebar />
 
-        <p className="mt-3 text-gray-600">
-          Your React project is ready for development.
-        </p>
+      {/* Main content */}
+      <main className="ml-[250px] min-h-screen min-w-0 max-[768px]:ml-[230px]">
+        <Topbar />
 
-        <button className="mt-5 rounded-lg bg-blue-600 px-5 py-2 text-white hover:bg-blue-700">
-          Get Started
-        </button>
-      </div>
+        <div className="p-[30px] max-[768px]:p-4">
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/products" element={<Products />} />
+            <Route path="/inventory" element={<Inventory />} />
+            <Route path="/metal-rates" element={<MetalRates />} />
+
+            <Route
+              path="*"
+              element={
+                <section className="rounded-[14px] border border-[#ebe8e1] bg-white p-6">
+                  <h2 className="text-lg font-bold text-[#292821]">
+                    Page coming soon
+                  </h2>
+                  <p className="mt-2 text-sm text-[#89867d]">
+                    Later
+                  </p>
+                </section>
+              }
+            />
+          </Routes>
+        </div>
+      </main>
     </div>
-  )
+  );
 }
 
-export default App
+function App() {
+  return (
+    <BrowserRouter>
+      <AppLayout />
+    </BrowserRouter>
+  );
+}
+
+export default App;
