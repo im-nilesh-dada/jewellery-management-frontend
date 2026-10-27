@@ -1,21 +1,56 @@
-import React from "react";
-import Login from "./pages/Login/Login";
-import { Navigate, Route, Routes } from "react-router-dom";
-import NotFound from "./pages/NotFound/NotFound";
 
-export default function App() {
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+import Sidebar from "./components/Sidebar";
+import Topbar from "./components/Topbar";
+import Dashboard from "./pages/Dashboard";
+import Products from "./pages/Products";
+import Inventory from "./pages/Inventory";
+import MetalRates from "./pages/MetalRates";
+
+function AppLayout() {
   return (
-    <Routes>
-      <Route path="/" element={<Navigate to="/login" replace />} />
-    
-    {/* Authentication  */}
-    <Route path='/login' element={<Login/>}/>
+    <div className="min-h-screen bg-[#faf9f6]">
+      {/* Fixed sidebar */}
+      <Sidebar />
 
-    {/* Handle Invalid Routes  */}
-    
-    <Route path="*" element={<NotFound/>}/>
+      {/* Main content */}
+      <main className="ml-[250px] min-h-screen min-w-0 max-[768px]:ml-[230px]">
+        <Topbar />
 
+        <div className="p-[30px] max-[768px]:p-4">
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/products" element={<Products />} />
+            <Route path="/inventory" element={<Inventory />} />
+            <Route path="/metal-rates" element={<MetalRates />} />
 
-    </Routes>
+            <Route
+              path="*"
+              element={
+                <section className="rounded-[14px] border border-[#ebe8e1] bg-white p-6">
+                  <h2 className="text-lg font-bold text-[#292821]">
+                    Page coming soon
+                  </h2>
+                  <p className="mt-2 text-sm text-[#89867d]">
+                    Later
+                  </p>
+                </section>
+              }
+            />
+          </Routes>
+        </div>
+      </main>
+    </div>
   );
 }
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AppLayout />
+    </BrowserRouter>
+  );
+}
+
+export default App;

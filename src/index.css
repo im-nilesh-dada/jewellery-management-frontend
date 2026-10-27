@@ -1,1 +1,137 @@
+
 @import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+
+/* Global theme */
+:root {
+  font-family: "Inter", Arial, sans-serif;
+  color: #292821;
+  background: #f8f7f4;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-optical-sizing: auto;
+
+  /* Gold theme */
+  --color-gold: #9a7837;
+  --color-gold-dark: #806127;
+  --color-gold-light: #f5efdf;
+
+  /* Text and surfaces */
+  --color-text: #292821;
+  --color-text-secondary: #77746b;
+  --color-background: #f8f7f4;
+  --color-surface: #ffffff;
+  --color-border: #ebe8e1;
+
+  /* Status colors */
+  --color-success: #287a4b;
+  --color-success-bg: #e7f5ec;
+  --color-warning: #99651c;
+  --color-warning-bg: #fff0d8;
+  --color-danger: #b23a32;
+  --color-danger-bg: #fde8e7;
+
+  /* Layout */
+  --sidebar-width: 250px;
+  --topbar-height: 82px;
+}
+
+/* Consistent sizing */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Document */
+html {
+  min-width: 320px;
+  min-height: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+  background: var(--color-background);
+}
+
+/* Typography */
+body,
+button,
+input,
+select,
+textarea {
+  font-family: "Inter", Arial, sans-serif;
+}
+
+button,
+input,
+select,
+textarea {
+  font-size: inherit;
+}
+
+/* Buttons */
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Links */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Images and icons */
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* Headings and paragraphs */
+h1,
+h2,
+h3,
+h4,
+p {
+  margin-top: 0;
+}
+
+/* Selected text */
+::selection {
+  color: #292821;
+  background: #e9ddbd;
+}
+
+/* React root */
+#root {
+  min-height: 100vh;
+}
+
+/* Keyboard accessibility */
+:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 3px;
+}
+
+/* Respect reduced-motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
