@@ -1,7 +1,7 @@
 import { useState } from "react";
-import AuthLayout from "../../components/auth/AuthLayout";
-import Button from "../../components/ui/Button";
-import Input from "../../components/ui/Input";
+import AuthLayout from "../components/auth/AuthLayout";
+import Button from "../components/ui/Button";
+import Input from "../components/ui/Input";
 
 const Login = () => {
   const [formData, setFormData] = useState({

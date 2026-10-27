@@ -1,5 +1,5 @@
 
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 
 import Sidebar from "./components/Sidebar";
 import Topbar from "./components/Topbar";
@@ -21,8 +21,11 @@ function AppLayout() {
         <div className="p-[30px] max-[768px]:p-4">
           <Routes>
             <Route path="/" element={<Dashboard />} />
+
             <Route path="/products" element={<Products />} />
+
             <Route path="/inventory" element={<Inventory />} />
+
             <Route path="/metal-rates" element={<MetalRates />} />
 
             <Route
@@ -32,6 +35,7 @@ function AppLayout() {
                   <h2 className="text-lg font-bold text-[#292821]">
                     Page coming soon
                   </h2>
+
                   <p className="mt-2 text-sm text-[#89867d]">
                     Later
                   </p>
@@ -46,11 +50,7 @@ function AppLayout() {
 }
 
 function App() {
-  return (
-    <BrowserRouter>
-      <AppLayout />
-    </BrowserRouter>
-  );
+  return <AppLayout />;
 }
 
 export default App;
