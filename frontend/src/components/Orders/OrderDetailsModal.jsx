@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { ArrowRight, CalendarDays, Package, UserRound, X } from "lucide-react";
 
-import OrderStatusBadge from "../Orders/OrderStatusBadge";
+import OrderStatusBadge from "./OrderStatusBadge";
 import { nextStatus } from "../../data/mockOrderData";
 import { currency, formatDate, getTotal } from "../../utils/orderUtils";
 
