@@ -8,6 +8,7 @@ import Dashboard from "./pages/Dashboard";
 import Products from "./pages/Products";
 import Inventory from "./pages/Inventory";
 import MetalRates from "./pages/MetalRates";
+import Customers from "./pages/Customers"
 
 function AppLayout() {
   return (
@@ -28,6 +29,8 @@ function AppLayout() {
             <Route path="/inventory" element={<Inventory />} />
 
             <Route path="/metal-rates" element={<MetalRates />} />
+
+            <Route path='/customers' element={<Customers/>}/>
 
             <Route
               path="*"
