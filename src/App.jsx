@@ -1,4 +1,5 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { useState } from "react";
+import { Routes, Route } from "react-router-dom";
 
 import Sidebar from "./components/Common/Sidebar";
 import Topbar from "./components/Common/Topbar";
@@ -8,16 +9,31 @@ import Dashboard from "./pages/Dashboard";
 import Products from "./pages/Products";
 import Inventory from "./pages/Inventory";
 import MetalRates from "./pages/MetalRates";
-import Customers from "./pages/Customers"
+import Customers from "./pages/Customers";
 
 function AppLayout() {
+  const [sidebarExpanded, setSidebarExpanded] = useState(false);
+
   return (
     <div className="min-h-screen bg-[#faf9f6]">
-      {/* Fixed sidebar */}
-      <Sidebar />
+      <Sidebar
+        expanded={sidebarExpanded}
+        onMouseEnter={() => setSidebarExpanded(true)}
+        onMouseLeave={() => setSidebarExpanded(false)}
+      />
 
-      {/* Main content */}
-      <main className="ml-[250px] min-h-screen min-w-0 max-[768px]:ml-[230px]">
+      {/* Main content moves with the sidebar */}
+      <main
+        className={`
+          min-h-screen min-w-0
+          ${
+            sidebarExpanded
+              ? "ml-[250px]"
+              : "ml-[68px]"
+          }
+          transition-[margin] duration-300 ease-in-out
+        `}
+      >
         <Topbar />
 
         <div className="p-[30px] max-[768px]:p-4">
@@ -30,7 +46,7 @@ function AppLayout() {
 
             <Route path="/metal-rates" element={<MetalRates />} />
 
-            <Route path='/customers' element={<Customers/>}/>
+            <Route path="/customers" element={<Customers />} />
 
             <Route
               path="*"
@@ -59,7 +75,7 @@ function App() {
       {/* Login page without dashboard layout */}
       <Route path="/login" element={<Login />} />
 
-      {/* Dashboard and other application pages */}
+      {/* Dashboard and application pages */}
       <Route path="/*" element={<AppLayout />} />
     </Routes>
   );
