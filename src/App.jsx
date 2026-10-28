@@ -1,8 +1,9 @@
-
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 
 import Sidebar from "./components/Common/Sidebar";
 import Topbar from "./components/Common/Topbar";
+
+import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Products from "./pages/Products";
 import Inventory from "./pages/Inventory";
@@ -50,7 +51,15 @@ function AppLayout() {
 }
 
 function App() {
-  return <AppLayout />;
+  return (
+    <Routes>
+      {/* Login page without dashboard layout */}
+      <Route path="/login" element={<Login />} />
+
+      {/* Dashboard and other application pages */}
+      <Route path="/*" element={<AppLayout />} />
+    </Routes>
+  );
 }
 
 export default App;
