@@ -1,57 +1,81 @@
 import { useMemo, useState } from "react";
-
 import {
-  Search,
-  Plus,
-  ShoppingCart,
-  Clock3,
-  PackageCheck,
-  CheckCircle2,
-  Eye,
-  ChevronDown,
+  AlertCircle,
   CalendarDays,
-  UserRound,
-  ArrowRight,
+  CheckCircle2,
+  ClipboardList,
+  Clock3,
+  Plus,
+  RefreshCw,
+  Search,
+  ShoppingBag,
+  X,
 } from "lucide-react";
 
-import {
-  initialOrders,
-  statusStyles,
-  nextStatus,
-} from "../data/mockOrderData";
-
-import {
-  currency,
-  formatDate,
-  getTotal,
-} from "../utils/orderUtils";
-
-import OrderStatusBadge from "../components/Orders/OrderStatusBadge";
-import OrderSummaryCard from "../components/Orders/OrderSummaryCard";
 import OrderModal from "../components/Orders/OrderModal";
 import OrderDetailsModal from "../components/Orders/OrderDetailsModal";
+import OrderStatusBadge from "../components/Orders/OrderStatusBadge";
+import OrderSummaryCard from "../components/Orders/OrderSummaryCard";
 
-export default function Orders() {
+import { initialOrders, nextStatus } from "../data/mockOrderData";
+import { currency, formatDate, getTotal } from "../utils/orderUtils";
+
+const selectClass =
+  "h-9 rounded-lg border border-[#e5e1d8] bg-white px-3 text-sm text-gray-700 outline-none transition focus:border-[#9a7837]";
+
+const statusOptions = [
+  "Draft",
+  "Confirmed",
+  "Processing",
+  "Ready",
+  "Completed",
+  "Cancelled",
+];
+
+function Orders() {
   const [orders, setOrders] = useState(initialOrders);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
   const [dateFilter, setDateFilter] = useState("");
-  const [showCreateModal, setShowCreateModal] = useState(false);
-  const [selectedOrderId, setSelectedOrderId] = useState(null);
+  const [formOpen, setFormOpen] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
-
-  const selectedOrder =
-    orders.find((order) => order.id === selectedOrderId) || null;
+  const [saving, setSaving] = useState(false);
 
   const stats = useMemo(
-    () => ({
-      total: orders.length,
-      pending: orders.filter((o) => o.status === "Draft").length,
-      processing: orders.filter((o) =>
-        ["Confirmed", "Processing", "Ready"].includes(o.status)
-      ).length,
-      completed: orders.filter((o) => o.status === "Completed").length,
-    }),
+    () => [
+      {
+        key: "total",
+        label: "Total Orders",
+        value: orders.length,
+        icon: ClipboardList,
+        iconStyle: "bg-[#f5f0e5] text-[#9a7837]",
+      },
+      {
+        key: "pending",
+        label: "Pending Orders",
+        value: orders.filter((order) =>
+          ["Draft", "Confirmed", "Processing"].includes(order.status)
+        ).length,
+        icon: Clock3,
+        iconStyle: "bg-amber-50 text-amber-700",
+      },
+      {
+        key: "ready",
+        label: "Ready Orders",
+        value: orders.filter((order) => order.status === "Ready").length,
+        icon: ShoppingBag,
+        iconStyle: "bg-green-50 text-green-700",
+      },
+      {
+        key: "completed",
+        label: "Completed Orders",
+        value: orders.filter((order) => order.status === "Completed").length,
+        icon: CheckCircle2,
+        iconStyle: "bg-blue-50 text-blue-700",
+      },
+    ],
     [orders]
   );
 
@@ -60,229 +84,261 @@ export default function Orders() {
 
     return orders
       .filter((order) => {
-        const matchesSearch =
-          !query ||
-          order.id.toLowerCase().includes(query) ||
-          order.customer.toLowerCase().includes(query) ||
-          order.items.some(
-            (item) =>
-              item.name.toLowerCase().includes(query) ||
-              item.sku.toLowerCase().includes(query)
-          );
+        const matchesSearch = [
+          order.id,
+          order.customerName,
+          order.customer,
+          order.status,
+        ].some((value) =>
+          String(value ?? "").toLowerCase().includes(query)
+        );
 
         const matchesStatus =
           statusFilter === "All" || order.status === statusFilter;
 
-        const matchesDate =
-          !dateFilter || order.date === dateFilter;
+        const matchesDate = !dateFilter || order.date === dateFilter;
 
         return matchesSearch && matchesStatus && matchesDate;
       })
-      .sort(
-        (a, b) =>
-          b.date.localeCompare(a.date) ||
-          b.id.localeCompare(a.id)
-      );
+      .sort((a, b) => {
+        const dateDifference = String(b.date ?? "").localeCompare(
+          String(a.date ?? "")
+        );
+
+        return dateDifference || String(b.id).localeCompare(String(a.id));
+      });
   }, [orders, search, statusFilter, dateFilter]);
 
-  const showNotice = (message) => {
-    setNotice(message);
-    window.setTimeout(() => setNotice(""), 3500);
-  };
-
-  const createOrder = (orderData) => {
-    const highestNumber = Math.max(
-      1048,
-      ...orders.map(
-        (order) => Number(order.id.split("-").pop()) || 0
-      )
-    );
-
-    const newOrder = {
-      ...orderData,
-      id: `ORD-${orderData.date.slice(0, 4)}-${highestNumber + 1}`,
-    };
-
-    setOrders((current) => [newOrder, ...current]);
-    setShowCreateModal(false);
-    showNotice(`${newOrder.id} created as a draft.`);
-  };
-
-  const advanceOrder = (id) => {
-    const order = orders.find((entry) => entry.id === id);
-
-    if (!order) return;
-
-    const status =
-      order.status === "Draft"
-        ? "Confirmed"
-        : nextStatus[order.status];
-
-    if (!status) return;
-
-    setOrders((current) =>
-      current.map((entry) =>
-        entry.id === id ? { ...entry, status } : entry
-      )
-    );
-
-    setSelectedOrderId(null);
-    showNotice(`${id} moved to ${status}.`);
-  };
-
-  const cancelOrder = (id) => {
-    const order = orders.find((entry) => entry.id === id);
-
-    if (!order || ["Completed", "Cancelled"].includes(order.status)) {
-      return;
-    }
-
-    const confirmed = window.confirm(
-      `Cancel order ${id}? This demo will update its status only.`
-    );
-
-    if (!confirmed) return;
-
-    setOrders((current) =>
-      current.map((entry) =>
-        entry.id === id
-          ? { ...entry, status: "Cancelled" }
-          : entry
-      )
-    );
-
-    setSelectedOrderId(null);
-    showNotice(`${id} has been cancelled.`);
-  };
-
-  const clearFilters = () => {
+  const resetFilters = () => {
     setSearch("");
     setStatusFilter("All");
     setDateFilter("");
   };
 
+  const showNotice = (message) => {
+    setNotice(message);
+    setError("");
+  };
+
+  const handleCreate = async (formData) => {
+    setSaving(true);
+    setError("");
+
+    try {
+      const numericIds = orders
+        .map((order) => Number(String(order.id).replace(/\D/g, "")))
+        .filter(Number.isFinite);
+
+      const nextId = Math.max(0, ...numericIds) + 1;
+
+      const newOrder = {
+        ...formData,
+        id: `ORD-${String(nextId).padStart(4, "0")}`,
+        status: "Draft",
+        createdAt: new Date().toISOString(),
+      };
+
+      setOrders((current) => [newOrder, ...current]);
+      setFormOpen(false);
+      showNotice("Order created successfully.");
+    } catch {
+      setError("Unable to create the order.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleAdvance = (order) => {
+    const targetStatus =
+      order.status === "Draft" ? "Confirmed" : nextStatus[order.status];
+
+    if (!targetStatus) return;
+
+    setOrders((current) =>
+      current.map((item) =>
+        item.id === order.id
+          ? { ...item, status: targetStatus }
+          : item
+      )
+    );
+
+    setSelectedOrder((current) =>
+      current?.id === order.id
+        ? { ...current, status: targetStatus }
+        : current
+    );
+
+    showNotice(`Order ${order.id} marked as ${targetStatus}.`);
+  };
+
+  const handleCancel = (order) => {
+    const confirmed = window.confirm(
+      `Cancel order ${order.id}? This action cannot be undone.`
+    );
+
+    if (!confirmed) return;
+
+    setOrders((current) =>
+      current.map((item) =>
+        item.id === order.id
+          ? { ...item, status: "Cancelled" }
+          : item
+      )
+    );
+
+    setSelectedOrder(null);
+    showNotice(`Order ${order.id} cancelled.`);
+  };
+
+  const openCreateForm = () => {
+    setError("");
+    setNotice("");
+    setFormOpen(true);
+  };
+
+  const handleRefresh = () => {
+    // This page currently uses local state rather than a backend service.
+    // Refreshing the page data is therefore not connected to an API.
+    setSearch("");
+    setStatusFilter("All");
+    setDateFilter("");
+    setError("");
+    setNotice("");
+  };
+
   return (
-    <div className="mx-auto w-full max-w-[1600px] space-y-6 pb-8">
-      {/* Page header */}
-      <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-        <div>
-          <div className="mb-2 flex items-center gap-2 text-[11px] font-medium text-[#928d80]">
-            <span>JMS ERP</span>
-            <span className="text-[#c5bda9]">/</span>
-            <span className="text-[#a18443]">Order Management</span>
+    <main className="min-h-full space-y-5 bg-[#faf9f6] p-4 sm:p-5 lg:p-6">
+      {/* Page heading */}
+      <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
+        <div className="flex items-start gap-3">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[#e9dfc9] bg-[#f5f0e5] text-[#9a7837]">
+            <ShoppingBag size={21} />
           </div>
 
-          <h1 className="text-[26px] font-semibold tracking-tight text-[#292821] sm:text-[30px]">
-            Order Management
-          </h1>
-
-          <p className="mt-1.5 text-sm text-[#858174]">
-            Create orders, manage fulfilment, and track order progress.
-          </p>
-        </div>
-
-        <button
-          type="button"
-          onClick={() => setShowCreateModal(true)}
-          className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-[#302e25] px-4 text-xs font-semibold text-[#f4e4b8] shadow-sm transition hover:bg-[#45402f] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d9bc76]"
-        >
-          <Plus size={17} />
-          Create order
-        </button>
-      </div>
-
-      {/* Summary cards */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <OrderSummaryCard
-          label="Total orders"
-          value={stats.total}
-          helper="All orders in this view"
-          icon={ShoppingCart}
-          accent="bg-[#f4efe2] text-[#9a7b37]"
-        />
-
-        <OrderSummaryCard
-          label="Awaiting confirmation"
-          value={stats.pending}
-          helper="Draft orders"
-          icon={Clock3}
-          accent="bg-[#f8f0df] text-[#a67d2f]"
-        />
-
-        <OrderSummaryCard
-          label="In progress"
-          value={stats.processing}
-          helper="Confirmed, processing or ready"
-          icon={PackageCheck}
-          accent="bg-[#eaf0f8] text-[#5579a5]"
-        />
-
-        <OrderSummaryCard
-          label="Completed orders"
-          value={stats.completed}
-          helper="Successfully fulfilled"
-          icon={CheckCircle2}
-          accent="bg-[#e8f4ec] text-[#47835b]"
-        />
-      </div>
-
-      {/* Orders table */}
-      <section className="overflow-hidden rounded-2xl border border-[#ebe7de] bg-white shadow-[0_2px_10px_rgba(41,40,33,0.025)]">
-        <div className="flex flex-col gap-4 border-b border-[#efebe3] p-5 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <h2 className="text-base font-semibold text-[#302f28]">
-              All orders
-            </h2>
+            <h1 className="text-xl font-semibold tracking-tight text-[#292821]">
+              Orders
+            </h1>
 
-            <p className="mt-1 text-xs text-[#8e897d]">
-              {filteredOrders.length}{" "}
-              {filteredOrders.length === 1 ? "order" : "orders"} found
+            <p className="mt-1 text-sm text-gray-500">
+              Manage jewellery orders, track progress, and view order details.
             </p>
           </div>
+        </div>
 
-          <div className="grid grid-cols-1 gap-2 sm:grid-cols-3 lg:w-auto">
-            <label className="relative block">
-              <Search
-                size={16}
-                className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#a09a8d]"
-              />
+        <div className="flex flex-wrap items-center gap-2 self-start sm:self-auto">
+          <button
+            type="button"
+            onClick={handleRefresh}
+            className="inline-flex h-9 items-center justify-center gap-2 rounded-lg border border-[#e5e1d8] bg-white px-3 text-sm font-medium text-gray-600 transition hover:bg-gray-50"
+          >
+            <RefreshCw size={15} />
+            Reset View
+          </button>
 
-              <input
-                type="search"
-                value={search}
-                onChange={(event) => setSearch(event.target.value)}
-                placeholder="Search orders..."
-                aria-label="Search orders"
-                className="h-10 w-full rounded-xl border border-[#e8e3d9] bg-[#fdfcf9] pl-9 pr-3 text-xs text-[#38362e] outline-none placeholder:text-[#aaa597] focus:border-[#b79a57] focus:ring-2 focus:ring-[#d9bc76]/20 sm:w-[220px]"
-              />
-            </label>
+          <button
+            type="button"
+            onClick={openCreateForm}
+            className="inline-flex h-9 items-center justify-center gap-1.5 rounded-lg bg-[#9a7837] px-3 text-sm font-medium text-white transition hover:bg-[#806127]"
+          >
+            <Plus size={16} />
+            Create Order
+          </button>
+        </div>
+      </div>
 
-            <label className="relative block">
-              <select
-                value={statusFilter}
-                onChange={(event) => setStatusFilter(event.target.value)}
-                aria-label="Filter by status"
-                className="h-10 w-full appearance-none rounded-xl border border-[#e8e3d9] bg-[#fdfcf9] pl-3 pr-9 text-xs text-[#514e43] outline-none focus:border-[#b79a57] sm:w-[160px]"
-              >
-                <option value="All">All statuses</option>
+      {/* Notifications */}
+      {error && (
+        <div
+          role="alert"
+          className="flex items-start gap-2 rounded-lg border border-red-200 bg-red-50 px-3 py-2.5 text-sm text-red-700"
+        >
+          <AlertCircle size={17} className="mt-0.5 shrink-0" />
 
-                {Object.keys(statusStyles).map((status) => (
-                  <option key={status} value={status}>
-                    {status}
-                  </option>
-                ))}
-              </select>
+          <p className="flex-1">{error}</p>
 
-              <ChevronDown
-                size={14}
-                className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#928d80]"
-              />
-            </label>
+          <button
+            type="button"
+            onClick={() => setError("")}
+            className="text-xs font-medium underline"
+          >
+            Dismiss
+          </button>
+        </div>
+      )}
 
-            <label className="relative block">
+      {notice && (
+        <div
+          role="status"
+          className="flex items-start gap-2 rounded-lg border border-green-200 bg-green-50 px-3 py-2.5 text-sm text-green-700"
+        >
+          <CheckCircle2 size={17} className="mt-0.5 shrink-0" />
+
+          <p className="flex-1">{notice}</p>
+
+          <button
+            type="button"
+            onClick={() => setNotice("")}
+            aria-label="Dismiss notification"
+            className="text-xs font-medium underline"
+          >
+            Dismiss
+          </button>
+        </div>
+      )}
+
+      {/* Summary cards */}
+      <div className="grid grid-cols-2 gap-3 xl:grid-cols-4">
+        {stats.map((stat) => (
+          <OrderSummaryCard
+            key={stat.key}
+            label={stat.label}
+            value={stat.value}
+            icon={stat.icon}
+            iconStyle={stat.iconStyle}
+          />
+        ))}
+      </div>
+
+      {/* Search and filters */}
+      <div className="flex flex-col gap-3 rounded-xl border border-[#ebe8e1] bg-white p-3 shadow-sm">
+        <div className="flex flex-col gap-3 xl:flex-row xl:items-center">
+          <div className="relative min-w-0 flex-1">
+            <Search
+              size={17}
+              className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+            />
+
+            <input
+              type="search"
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+              placeholder="Search by order ID, customer or status..."
+              aria-label="Search orders"
+              className="h-9 w-full rounded-lg border border-[#e5e1d8] bg-[#fdfcf9] pl-9 pr-3 text-sm outline-none transition placeholder:text-gray-400 focus:border-[#9a7837]"
+            />
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <select
+              value={statusFilter}
+              onChange={(event) => setStatusFilter(event.target.value)}
+              aria-label="Filter by order status"
+              className={selectClass}
+            >
+              <option value="All">All Statuses</option>
+
+              {statusOptions.map((status) => (
+                <option key={status} value={status}>
+                  {status}
+                </option>
+              ))}
+            </select>
+
+            <div className="relative">
               <CalendarDays
                 size={15}
-                className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#a09a8d]"
+                className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
               />
 
               <input
@@ -290,160 +346,163 @@ export default function Orders() {
                 value={dateFilter}
                 onChange={(event) => setDateFilter(event.target.value)}
                 aria-label="Filter by order date"
-                className="h-10 w-full rounded-xl border border-[#e8e3d9] bg-[#fdfcf9] pl-9 pr-2 text-xs text-[#514e43] outline-none focus:border-[#b79a57] sm:w-[155px]"
+                className="h-9 rounded-lg border border-[#e5e1d8] bg-white pl-9 pr-3 text-sm text-gray-700 outline-none transition focus:border-[#9a7837]"
               />
-            </label>
+            </div>
+
+            <button
+              type="button"
+              onClick={resetFilters}
+              title="Reset search and filters"
+              aria-label="Reset search and filters"
+              className="flex h-9 items-center justify-center gap-1.5 rounded-lg border border-[#e5e1d8] px-3 text-sm text-gray-600 transition hover:bg-gray-50"
+            >
+              <X size={15} />
+              Reset
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Orders table */}
+      <div className="w-full min-w-0 overflow-hidden rounded-xl border border-[#ebe8e1] bg-white shadow-sm">
+        <div className="flex items-center justify-between gap-3 border-b border-[#ebe8e1] px-3 py-3 sm:px-4">
+          <div className="min-w-0">
+            <h2 className="text-sm font-semibold text-[#292821]">
+              Order Register
+            </h2>
+
+            <p className="mt-0.5 text-xs text-gray-500">
+              {filteredOrders.length}{" "}
+              {filteredOrders.length === 1 ? "order" : "orders"} found
+            </p>
           </div>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[820px] border-collapse text-left">
+        <div className="w-full overflow-x-auto overscroll-x-contain">
+          <table className="w-full min-w-[850px] border-collapse text-left text-sm">
             <thead>
-              <tr className="border-b border-[#efebe3] bg-[#fbfaf7]">
-                {[
-                  "Order",
-                  "Customer",
-                  "Items",
-                  "Order date",
-                  "Total",
-                  "Status",
-                  "Actions",
-                ].map((heading) => (
-                  <th
-                    key={heading}
-                    className="px-5 py-3.5 text-[10px] font-bold uppercase tracking-[0.09em] text-[#918b7d]"
-                  >
-                    {heading}
-                  </th>
-                ))}
+              <tr className="border-b border-[#ebe8e1] bg-[#faf9f6]">
+                <th className="whitespace-nowrap px-3 py-3 text-xs font-medium text-gray-500 sm:px-4">
+                  Order ID
+                </th>
+
+                <th className="px-3 py-3 text-xs font-medium text-gray-500 sm:px-4">
+                  Customer
+                </th>
+
+                <th className="whitespace-nowrap px-3 py-3 text-xs font-medium text-gray-500 sm:px-4">
+                  Order Date
+                </th>
+
+                <th className="px-3 py-3 text-xs font-medium text-gray-500 sm:px-4">
+                  Items
+                </th>
+
+                <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 sm:px-4">
+                  Total
+                </th>
+
+                <th className="px-3 py-3 text-xs font-medium text-gray-500 sm:px-4">
+                  Status
+                </th>
+
+                <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 sm:px-4">
+                  Actions
+                </th>
               </tr>
             </thead>
 
-            <tbody className="divide-y divide-[#f0ede6]">
-              {filteredOrders.map((order) => (
-                <tr
-                  key={order.id}
-                  className="transition-colors hover:bg-[#fdfbf6]"
-                >
-                  <td className="px-5 py-4">
-                    <button
-                      type="button"
-                      onClick={() => setSelectedOrderId(order.id)}
-                      className="text-xs font-semibold text-[#78602f] hover:text-[#a18443] hover:underline"
+            <tbody className="divide-y divide-[#f0eee8]">
+              {filteredOrders.length > 0 ? (
+                filteredOrders.map((order) => {
+                  const itemCount = (order.items ?? []).reduce(
+                    (sum, item) => sum + Number(item.quantity || 0),
+                    0
+                  );
+
+                  const followingStatus =
+                    order.status === "Draft"
+                      ? "Confirmed"
+                      : nextStatus[order.status];
+
+                  return (
+                    <tr
+                      key={order.id}
+                      className="transition-colors hover:bg-[#fdfcf9]"
                     >
-                      {order.id}
-                    </button>
+                      <td className="whitespace-nowrap px-3 py-3 text-xs font-medium text-[#9a7837] sm:px-4">
+                        {order.id}
+                      </td>
 
-                    <p className="mt-1 text-[10px] text-[#a19b8e]">
-                      {order.payment}
-                    </p>
-                  </td>
-
-                  <td className="px-5 py-4">
-                    <div className="flex items-center gap-2.5">
-                      <div className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[#f3efe5] text-[#8e7742]">
-                        <UserRound size={15} />
-                      </div>
-
-                      <div className="min-w-0">
-                        <p className="whitespace-nowrap text-xs font-semibold text-[#3c3a32]">
-                          {order.customer}
-                        </p>
-                        <p className="mt-1 whitespace-nowrap text-[10px] text-[#9a9487]">
-                          {order.phone}
-                        </p>
-                      </div>
-                    </div>
-                  </td>
-
-                  <td className="px-5 py-4">
-                    <p className="text-xs font-medium text-[#48463e]">
-                      {order.items.length}{" "}
-                      {order.items.length === 1 ? "product" : "products"}
-                    </p>
-
-                    <p
-                      className="mt-1 max-w-[180px] truncate text-[10px] text-[#9a9487]"
-                      title={order.items.map((item) => item.name).join(", ")}
-                    >
-                      {order.items.map((item) => item.name).join(", ")}
-                    </p>
-                  </td>
-
-                  <td className="whitespace-nowrap px-5 py-4 text-xs text-[#686458]">
-                    {formatDate(order.date)}
-                  </td>
-
-                  <td className="whitespace-nowrap px-5 py-4 text-xs font-semibold text-[#37352d]">
-                    {currency(getTotal(order))}
-                  </td>
-
-                  <td className="px-5 py-4">
-                    <OrderStatusBadge status={order.status} />
-                  </td>
-
-                  <td className="px-5 py-4">
-                    <div className="flex items-center gap-1">
-                      <button
-                        type="button"
-                        onClick={() => setSelectedOrderId(order.id)}
-                        title="View order"
-                        aria-label={`View ${order.id}`}
-                        className="grid h-8 w-8 place-items-center rounded-lg text-[#8b8578] hover:bg-[#f1ecdf] hover:text-[#8d7136]"
-                      >
-                        <Eye size={16} />
-                      </button>
-
-                      {order.status === "Draft" && (
-                        <button
-                          type="button"
-                          onClick={() => advanceOrder(order.id)}
-                          title="Confirm order"
-                          aria-label={`Confirm ${order.id}`}
-                          className="grid h-8 w-8 place-items-center rounded-lg text-emerald-700 hover:bg-emerald-50"
+                      <td className="px-3 py-3 sm:px-4">
+                        <span
+                          title={order.customerName || order.customer || ""}
+                          className="block max-w-[180px] truncate font-medium text-[#292821]"
                         >
-                          <CheckCircle2 size={16} />
-                        </button>
-                      )}
+                          {order.customerName || order.customer || "—"}
+                        </span>
+                      </td>
 
-                      {nextStatus[order.status] && (
-                        <button
-                          type="button"
-                          onClick={() => advanceOrder(order.id)}
-                          title={`Move to ${nextStatus[order.status]}`}
-                          aria-label={`Advance ${order.id}`}
-                          className="grid h-8 w-8 place-items-center rounded-lg text-[#8d7136] hover:bg-[#f6f0e2]"
-                        >
-                          <ArrowRight size={16} />
-                        </button>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                      <td className="whitespace-nowrap px-3 py-3 text-gray-600 sm:px-4">
+                        {formatDate(order.date)}
+                      </td>
 
-              {filteredOrders.length === 0 && (
+                      <td className="whitespace-nowrap px-3 py-3 text-gray-600 sm:px-4">
+                        {itemCount} {itemCount === 1 ? "item" : "items"}
+                      </td>
+
+                      <td className="whitespace-nowrap px-3 py-3 text-right font-medium text-[#292821] sm:px-4">
+                        {currency(order.total ?? getTotal(order.items ?? []))}
+                      </td>
+
+                      <td className="whitespace-nowrap px-3 py-3 sm:px-4">
+                        <OrderStatusBadge status={order.status} />
+                      </td>
+
+                      <td className="whitespace-nowrap px-3 py-3 sm:px-4">
+                        <div className="flex items-center justify-end gap-1">
+                          <button
+                            type="button"
+                            onClick={() => setSelectedOrder(order)}
+                            title="View order details"
+                            aria-label={`View order ${order.id}`}
+                            className="flex h-8 items-center justify-center rounded-lg border border-[#e5e1d8] bg-white px-2.5 text-xs font-medium text-gray-600 transition hover:bg-gray-50 hover:text-[#9a7837] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#9a7837]"
+                          >
+                            View
+                          </button>
+
+                          {followingStatus && (
+                            <button
+                              type="button"
+                              onClick={() => handleAdvance(order)}
+                              title={`Mark as ${followingStatus}`}
+                              aria-label={`Advance order ${order.id} to ${followingStatus}`}
+                              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-gray-500 transition hover:bg-[#f5f0e5] hover:text-[#9a7837] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#9a7837]"
+                            >
+                              <CheckCircle2 size={15} />
+                            </button>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })
+              ) : (
                 <tr>
-                  <td colSpan={7} className="px-5 py-16 text-center">
-                    <div className="mx-auto grid h-12 w-12 place-items-center rounded-2xl bg-[#f5f1e7] text-[#9b834b]">
-                      <ShoppingCart size={21} />
-                    </div>
+                  <td colSpan={7} className="px-4 py-14 text-center">
+                    <ShoppingBag
+                      size={30}
+                      className="mx-auto mb-2 text-gray-300"
+                    />
 
-                    <p className="mt-3 text-sm font-semibold text-[#4b483f]">
+                    <p className="text-sm font-medium text-gray-600">
                       No orders found
                     </p>
 
-                    <p className="mt-1 text-xs text-[#928d80]">
-                      Try another search or adjust the filters.
+                    <p className="mt-1 text-xs text-gray-400">
+                      Try changing your search or filters.
                     </p>
-
-                    <button
-                      type="button"
-                      onClick={clearFilters}
-                      className="mt-3 text-xs font-semibold text-[#8d7136] hover:underline"
-                    >
-                      Clear filters
-                    </button>
                   </td>
                 </tr>
               )}
@@ -451,45 +510,34 @@ export default function Orders() {
           </table>
         </div>
 
-        <footer className="flex flex-col gap-2 border-t border-[#efebe3] bg-[#fdfcf9] px-5 py-3 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-[11px] text-[#918b7d]">
-            Showing {filteredOrders.length} of {orders.length} orders
+        <div className="border-t border-[#ebe8e1] px-3 py-3 sm:px-4">
+          <p className="text-xs text-gray-500">
+            Showing {filteredOrders.length}{" "}
+            {filteredOrders.length === 1 ? "order" : "orders"}
           </p>
-
-          <p className="text-[10px] text-[#a19b8e]">
-            Demo data · Changes are held in the current session
-          </p>
-        </footer>
-      </section>
-
-      {/* Action notification */}
-      {notice && (
-        <div
-          role="status"
-          className="fixed bottom-5 right-5 z-[250] flex max-w-[calc(100vw-40px)] items-center gap-2 rounded-xl border border-[#d9cfb6] bg-[#302e25] px-4 py-3 text-xs font-medium text-[#f4e4b8] shadow-xl"
-        >
-          <CheckCircle2 size={16} className="shrink-0 text-[#d9bc76]" />
-          {notice}
         </div>
-      )}
+      </div>
 
-      {/* Create order */}
-      {showCreateModal && (
+      {/* Create order modal */}
+      {formOpen && (
         <OrderModal
-          onClose={() => setShowCreateModal(false)}
-          onCreate={createOrder}
+          onClose={() => setFormOpen(false)}
+          onCreate={handleCreate}
+          saving={saving}
         />
       )}
 
-      {/* View order */}
+      {/* Order details modal */}
       {selectedOrder && (
         <OrderDetailsModal
           order={selectedOrder}
-          onClose={() => setSelectedOrderId(null)}
-          onAdvance={advanceOrder}
-          onCancel={cancelOrder}
+          onClose={() => setSelectedOrder(null)}
+          onAdvance={handleAdvance}
+          onCancel={handleCancel}
         />
       )}
-    </div>
+    </main>
   );
 }
+
+export default Orders;

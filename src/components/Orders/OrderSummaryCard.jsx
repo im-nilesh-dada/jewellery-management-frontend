@@ -1,28 +1,21 @@
-export default function OrderSummaryCard({
-  label,
-  value,
-  helper,
-  icon: Icon,
-  accent,
-}) {
+function OrderSummaryCard({ label, value, icon: Icon, iconStyle }) {
   return (
-    <div className="rounded-2xl border border-[#ebe7de] bg-white p-5 shadow-[0_2px_10px_rgba(41,40,33,0.025)]">
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <p className="text-xs font-medium text-[#858174]">{label}</p>
-          <p className="mt-3 text-2xl font-semibold tracking-tight text-[#292821]">
-            {value}
-          </p>
-        </div>
-
-        <div
-          className={`grid h-11 w-11 shrink-0 place-items-center rounded-xl ${accent}`}
-        >
-          <Icon size={20} strokeWidth={1.8} />
-        </div>
+    <div className="flex min-w-0 items-center gap-3 rounded-xl border border-[#ebe8e1] bg-white px-4 py-3 shadow-sm">
+      <div
+        className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${iconStyle}`}
+      >
+        <Icon size={18} />
       </div>
 
-      <p className="mt-3 text-[11px] text-[#928d80]">{helper}</p>
+      <div className="min-w-0">
+        <p className="truncate text-xs text-gray-500">{label}</p>
+
+        <p className="mt-0.5 text-xl font-semibold leading-tight text-[#292821]">
+          {value}
+        </p>
+      </div>
     </div>
   );
 }
+
+export default OrderSummaryCard;

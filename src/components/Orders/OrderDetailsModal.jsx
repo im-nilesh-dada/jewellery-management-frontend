@@ -1,223 +1,223 @@
-import {
-  X,
-  UserRound,
-  CalendarDays,
-  Package,
-  ArrowRight,
-  Ban,
-} from "lucide-react";
+import { useEffect } from "react";
+import { ArrowRight, CalendarDays, Package, UserRound, X } from "lucide-react";
 
-import OrderStatusBadge from "./OrderStatusBadge";
-import { currency, formatDate, getTotal } from "../../utils/orderUtils";
+import OrderStatusBadge from "../Orders/OrderStatusBadge";
 import { nextStatus } from "../../data/mockOrderData";
+import { currency, formatDate, getTotal } from "../../utils/orderUtils";
 
-export default function OrderDetailsModal({
-  order,
-  onClose,
-  onAdvance,
-  onCancel,
-}) {
+function OrderDetailsModal({ order, onClose, onAdvance, onCancel }) {
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") onClose();
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [onClose]);
+
   if (!order) return null;
 
-  const next = order.status === "Draft"
-    ? "Confirmed"
-    : nextStatus[order.status];
+  const followingStatus =
+    order.status === "Draft" ? "Confirmed" : nextStatus[order.status];
 
+  const canAdvance = Boolean(followingStatus) && order.status !== "Cancelled";
   const canCancel = !["Completed", "Cancelled"].includes(order.status);
-  const canAdvance = Boolean(next);
+
+  const items = order.items ?? [];
+  const total = order.total ?? getTotal(items);
 
   return (
     <div
-      className="fixed inset-0 z-[200] flex items-center justify-center bg-black/40 p-3 backdrop-blur-[2px] sm:p-6"
+      className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/40 p-4"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) onClose();
       }}
     >
-      <section
+      <div
         role="dialog"
         aria-modal="true"
         aria-labelledby="order-details-title"
-        className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-[#ebe5d8] bg-[#fdfcf9] shadow-2xl"
+        className="my-auto w-full max-w-2xl overflow-hidden rounded-xl border border-[#ebe8e1] bg-white shadow-xl"
       >
-        <header className="flex items-start justify-between border-b border-[#ebe7de] p-5 sm:p-6">
+        <div className="flex items-center justify-between border-b border-[#ebe8e1] px-5 py-4">
           <div>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-[#a18443]">
-              Order details
-            </p>
-
             <h2
               id="order-details-title"
-              className="mt-1.5 text-xl font-semibold text-[#292821]"
+              className="text-base font-semibold text-[#292821]"
             >
-              {order.id}
+              Order Details
             </h2>
 
-            <div className="mt-3">
-              <OrderStatusBadge status={order.status} />
-            </div>
+            <p className="mt-1 text-xs text-gray-500">
+              Order #{order.id}
+            </p>
           </div>
 
           <button
             type="button"
             onClick={onClose}
             aria-label="Close order details"
-            className="grid h-9 w-9 place-items-center rounded-lg text-[#777265] hover:bg-[#f0ece3]"
+            className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-500 transition hover:bg-gray-100"
           >
             <X size={18} />
           </button>
-        </header>
+        </div>
 
-        <div className="space-y-6 p-5 sm:p-6">
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            <div className="rounded-xl border border-[#ebe7de] bg-white p-4">
-              <div className="flex items-center gap-2 text-[#a18443]">
-                <UserRound size={16} />
-                <span className="text-[10px] font-bold uppercase tracking-wider">
-                  Customer
-                </span>
-              </div>
-
-              <p className="mt-3 text-sm font-semibold text-[#37352d]">
-                {order.customer}
+        <div className="max-h-[70vh] space-y-5 overflow-y-auto p-5">
+          <div className="flex flex-col justify-between gap-3 rounded-xl border border-[#ebe8e1] bg-[#fdfcf9] p-4 sm:flex-row sm:items-center">
+            <div>
+              <p className="text-xs text-gray-500">Order total</p>
+              <p className="mt-1 text-2xl font-semibold text-[#292821]">
+                {currency(total)}
               </p>
-              <p className="mt-1 text-xs text-[#858174]">{order.phone}</p>
             </div>
 
-            <div className="rounded-xl border border-[#ebe7de] bg-white p-4">
-              <div className="flex items-center gap-2 text-[#a18443]">
-                <CalendarDays size={16} />
-                <span className="text-[10px] font-bold uppercase tracking-wider">
-                  Order date
-                </span>
+            <OrderStatusBadge status={order.status} />
+          </div>
+
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <div className="flex items-start gap-3 rounded-xl border border-[#ebe8e1] p-3">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#f5f0e5] text-[#9a7837]">
+                <UserRound size={17} />
               </div>
 
-              <p className="mt-3 text-sm font-semibold text-[#37352d]">
-                {formatDate(order.date)}
-              </p>
-              <p className="mt-1 text-xs text-[#858174]">
-                Payment: {order.payment}
-              </p>
+              <div className="min-w-0">
+                <p className="text-xs text-gray-500">Customer</p>
+                <p className="mt-1 break-words text-sm font-medium text-[#292821]">
+                  {order.customerName || order.customer || "—"}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-3 rounded-xl border border-[#ebe8e1] p-3">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#f5f0e5] text-[#9a7837]">
+                <CalendarDays size={17} />
+              </div>
+
+              <div className="min-w-0">
+                <p className="text-xs text-gray-500">Order date</p>
+                <p className="mt-1 text-sm font-medium text-[#292821]">
+                  {formatDate(order.date)}
+                </p>
+              </div>
             </div>
           </div>
 
-          <div>
-            <div className="mb-3 flex items-center gap-2">
-              <Package size={17} className="text-[#a18443]" />
+          <div className="overflow-hidden rounded-xl border border-[#ebe8e1]">
+            <div className="flex items-center gap-2 border-b border-[#ebe8e1] px-4 py-3">
+              <Package size={16} className="text-[#9a7837]" />
               <h3 className="text-sm font-semibold text-[#292821]">
-                Order items
+                Order Items
               </h3>
             </div>
 
-            <div className="overflow-x-auto rounded-xl border border-[#ebe7de] bg-white">
-              <table className="w-full min-w-[420px] text-left">
-                <thead className="border-b border-[#efebe3] bg-[#fbfaf7]">
-                  <tr>
-                    {["Product", "SKU", "Qty", "Price", "Subtotal"].map(
-                      (heading) => (
-                        <th
-                          key={heading}
-                          className="px-3 py-3 text-[10px] font-bold uppercase tracking-wider text-[#918b7d]"
-                        >
-                          {heading}
-                        </th>
-                      )
-                    )}
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[420px] border-collapse text-left text-sm">
+                <thead>
+                  <tr className="border-b border-[#ebe8e1] bg-[#faf9f6]">
+                    <th className="px-4 py-3 text-xs font-medium text-gray-500">
+                      Product
+                    </th>
+                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500">
+                      Qty
+                    </th>
+                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500">
+                      Unit Price
+                    </th>
+                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500">
+                      Subtotal
+                    </th>
                   </tr>
                 </thead>
 
-                <tbody className="divide-y divide-[#f0ede6]">
-                  {order.items.map((item, index) => (
-                    <tr key={`${item.sku}-${index}`}>
-                      <td className="px-3 py-3 text-xs font-medium text-[#37352d]">
-                        {item.name}
+                <tbody className="divide-y divide-[#f0eee8]">
+                  {items.map((item, index) => (
+                    <tr key={item.id ?? item.productId ?? index}>
+                      <td className="px-4 py-3 font-medium text-[#292821]">
+                        {item.name ?? item.productName ?? "Product"}
                       </td>
-                      <td className="px-3 py-3 text-[10px] text-[#858174]">
-                        {item.sku}
-                      </td>
-                      <td className="px-3 py-3 text-xs text-[#514e43]">
+                      <td className="px-4 py-3 text-right text-gray-600">
                         {item.quantity}
                       </td>
-                      <td className="whitespace-nowrap px-3 py-3 text-xs text-[#514e43]">
-                        {currency(item.price)}
+                      <td className="whitespace-nowrap px-4 py-3 text-right text-gray-600">
+                        {currency(item.price ?? item.unitPrice ?? 0)}
                       </td>
-                      <td className="whitespace-nowrap px-3 py-3 text-xs font-semibold text-[#37352d]">
-                        {currency(item.price * item.quantity)}
+                      <td className="whitespace-nowrap px-4 py-3 text-right font-medium text-[#292821]">
+                        {currency(
+                          Number(item.price ?? item.unitPrice ?? 0) *
+                            Number(item.quantity ?? 0)
+                        )}
                       </td>
                     </tr>
                   ))}
+
+                  {items.length === 0 && (
+                    <tr>
+                      <td
+                        colSpan={4}
+                        className="px-4 py-8 text-center text-sm text-gray-500"
+                      >
+                        No items in this order.
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
+            </div>
+
+            <div className="flex items-center justify-between border-t border-[#ebe8e1] bg-[#fdfcf9] px-4 py-3">
+              <span className="text-sm font-medium text-gray-600">
+                Total
+              </span>
+              <span className="text-base font-semibold text-[#292821]">
+                {currency(total)}
+              </span>
             </div>
           </div>
 
           {order.notes && (
-            <div className="rounded-xl border border-[#ebe7de] bg-white p-4">
-              <h3 className="text-xs font-semibold text-[#514e43]">
-                Order notes
-              </h3>
-              <p className="mt-2 whitespace-pre-wrap text-sm text-[#777265]">
+            <div>
+              <h3 className="text-xs font-medium text-gray-700">Notes</h3>
+              <p className="mt-1.5 whitespace-pre-wrap rounded-lg border border-[#ebe8e1] bg-[#fdfcf9] p-3 text-sm text-gray-600">
                 {order.notes}
               </p>
             </div>
           )}
+        </div>
 
-          <div className="flex items-center justify-between rounded-xl border border-[#e9dfc8] bg-[#f7f2e6] p-4">
-            <span className="text-xs font-medium text-[#81765d]">
-              Total order value
-            </span>
-            <span className="text-xl font-bold text-[#453b27]">
-              {currency(getTotal(order))}
-            </span>
-          </div>
+        <div className="flex flex-wrap justify-end gap-2 border-t border-[#ebe8e1] bg-[#fdfcf9] px-5 py-4">
+          <button
+            type="button"
+            onClick={onClose}
+            className="h-9 rounded-lg border border-[#e5e1d8] bg-white px-4 text-sm font-medium text-gray-600 transition hover:bg-gray-50"
+          >
+            Close
+          </button>
 
-          {canAdvance && (
-            <div className="rounded-xl border border-[#ebe7de] bg-white p-4">
-              <p className="text-xs font-semibold text-[#514e43]">
-                Next step
-              </p>
-              <p className="mt-1 text-xs text-[#858174]">
-                Move this order from {order.status} to {next}.
-              </p>
-
-              <button
-                type="button"
-                onClick={() => onAdvance(order.id)}
-                className="mt-3 inline-flex h-10 items-center gap-2 rounded-xl bg-[#302e25] px-4 text-xs font-semibold text-[#f4e4b8] hover:bg-[#45402f]"
-              >
-                {order.status === "Draft" ? "Confirm order" : `Move to ${next}`}
-                <ArrowRight size={15} />
-              </button>
-            </div>
-          )}
-
-          <footer className="flex flex-col-reverse gap-2 border-t border-[#ece7dc] pt-4 sm:flex-row sm:items-center sm:justify-between">
-            {canCancel ? (
-              <button
-                type="button"
-                onClick={() => onCancel(order.id)}
-                className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-rose-200 px-4 text-xs font-semibold text-rose-700 hover:bg-rose-50"
-              >
-                <Ban size={15} />
-                Cancel order
-              </button>
-            ) : (
-              <span className="text-xs text-[#918b7d]">
-                {order.status === "Completed"
-                  ? "This order has been completed."
-                  : "This order has been cancelled."}
-              </span>
-            )}
-
+          {canCancel && (
             <button
               type="button"
-              onClick={onClose}
-              className="h-10 rounded-xl border border-[#e1dccf] px-5 text-xs font-semibold text-[#666154] hover:bg-[#f1eee7]"
+              onClick={() => onCancel(order)}
+              className="h-9 rounded-lg border border-red-200 bg-white px-4 text-sm font-medium text-red-600 transition hover:bg-red-50"
             >
-              Close
+              Cancel Order
             </button>
-          </footer>
+          )}
+
+          {canAdvance && (
+            <button
+              type="button"
+              onClick={() => onAdvance(order)}
+              className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-[#9a7837] px-4 text-sm font-medium text-white transition hover:bg-[#806127]"
+            >
+              {order.status === "Draft" ? "Confirm Order" : `Mark ${followingStatus}`}
+              <ArrowRight size={15} />
+            </button>
+          )}
         </div>
-      </section>
+      </div>
     </div>
   );
 }
+
+export default OrderDetailsModal;
