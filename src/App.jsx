@@ -10,6 +10,7 @@ import Products from "./pages/Products";
 import Inventory from "./pages/Inventory";
 import MetalRates from "./pages/MetalRates";
 import Customers from "./pages/Customers";
+import Orders from "./pages/Orders"
 
 function AppLayout() {
   const [sidebarExpanded, setSidebarExpanded] = useState(false);
@@ -61,6 +62,7 @@ function AppLayout() {
             <Route path="/inventory" element={<Inventory />} />
             <Route path="/metal-rates" element={<MetalRates />} />
             <Route path="/customers" element={<Customers />} />
+            <Route path="/orders" element={<Orders/>}/>
 
             <Route
               path="*"
