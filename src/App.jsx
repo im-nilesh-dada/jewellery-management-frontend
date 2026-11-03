@@ -8,6 +8,9 @@ import Products from "./pages/Products";
 import Inventory from "./pages/Inventory";
 import MetalRates from "./pages/MetalRates";
 
+
+import Billing from "./pages/Billing";
+
 function AppLayout() {
   return (
     <div className="min-h-screen bg-[#faf9f6]">
@@ -24,6 +27,7 @@ function AppLayout() {
             <Route path="/products" element={<Products />} />
             <Route path="/inventory" element={<Inventory />} />
             <Route path="/metal-rates" element={<MetalRates />} />
+            <Route path="/billing" element={<Billing />} />
 
             <Route
               path="*"
