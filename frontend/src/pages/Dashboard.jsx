@@ -21,7 +21,7 @@ import {
   Tooltip,
 } from "recharts";
 
-import StatCard from "../components/StatCard";
+import StatCard from "../components/Common/StatCard";
 
 const salesData = [
   { day: "Mon", sales: 42000 },
