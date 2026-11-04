@@ -10,8 +10,10 @@ import Products from "./pages/Products";
 import Inventory from "./pages/Inventory";
 import MetalRates from "./pages/MetalRates";
 import Customers from "./pages/Customers";
-import Orders from "./pages/Orders"
-import Billing from "./pages/Billing"
+import Orders from "./pages/Orders";
+import Billing from "./pages/Billing";
+import Payments from "./pages/Payment";
+
 
 function AppLayout() {
   const [sidebarExpanded, setSidebarExpanded] = useState(false);
@@ -65,6 +67,7 @@ function AppLayout() {
             <Route path="/customers" element={<Customers />} />
             <Route path="/orders" element={<Orders/>}/>
             <Route path='/billing' element={<Billing/>}/>
+            <Route path="/payments" element={<Payments/>}/>
 
             <Route
               path="*"
