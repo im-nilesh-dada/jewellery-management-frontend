@@ -13,7 +13,7 @@ import Customers from "./pages/Customers";
 import Orders from "./pages/Orders";
 import Billing from "./pages/Billing";
 import Payments from "./pages/Payment";
-
+import SalesReports from "./pages/SalesReport";
 
 function AppLayout() {
   const [sidebarExpanded, setSidebarExpanded] = useState(false);
@@ -68,6 +68,7 @@ function AppLayout() {
             <Route path="/orders" element={<Orders/>}/>
             <Route path='/billing' element={<Billing/>}/>
             <Route path="/payments" element={<Payments/>}/>
+            <Route path="/reports" element={<SalesReports/>}/>
 
             <Route
               path="*"
