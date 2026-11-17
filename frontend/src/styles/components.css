@@ -1,0 +1,542 @@
+/* ==========================================================================
+   COMPONENTS: cards, tiles, buttons, forms, tables, badges, charts, modals
+   Uses native CSS nesting (Vite/Lightning CSS flattens it for older browsers).
+   ========================================================================== */
+
+/* ==========================================================================
+   CARDS: frosted champagne glass with 3D tilt, spotlight border & glare.
+   --rx/--ry/--mx/--my/--nx/--ny are written by initEffects.js while hovered.
+   ========================================================================== */
+:is(
+  #root main article,
+  #root main :is(section, div)[class*="bg-white"][class*="border-[#ebe8e1]"][class*="rounded-"],
+  #root main div[class*="border-[#eeeae2]"][class*="rounded-[11px]"]
+):not(.fixed *):not([class*="size-"]):not([class*="h-9"]) {
+  position: relative;
+  background: linear-gradient(150deg, rgba(255, 255, 255, 0.86) 0%, rgba(255, 251, 238, 0.72) 100%);
+  border-color: rgba(217, 180, 90, 0.30);
+  box-shadow: var(--shadow-rest);
+  transform: perspective(1100px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) scale(var(--sc, 1));
+  transition:
+    transform 0.7s var(--ease-out-expo),
+    box-shadow 0.5s,
+    border-color 0.4s;
+
+  /* hover = lift, deepen the shadow, brighten the rim */
+  &:hover {
+    --sc: 1.012;
+    box-shadow: var(--shadow-lift);
+    border-color: rgba(217, 180, 90, 0.62);
+  }
+  /* while the pointer is moving across it, track fast (JS adds .fx-tilting) */
+  &.fx-tilting {
+    transition: transform 0.12s linear, box-shadow 0.5s, border-color 0.4s;
+  }
+
+  /* spotlight rim: a gold gradient border that follows the pointer */
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    padding: 1.5px;
+    border-radius: inherit;
+    pointer-events: none;
+    background: radial-gradient(
+      300px circle at var(--mx, 50%) var(--my, 50%),
+      rgba(217, 180, 90, 1),
+      rgba(232, 205, 133, 0.28) 45%,
+      transparent 72%
+    );
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+            mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+  /* glare: a soft specular highlight under the pointer */
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    border-radius: inherit;
+    pointer-events: none;
+    background: radial-gradient(
+      380px circle at var(--mx, 50%) var(--my, 50%),
+      rgba(255, 255, 255, 0.62),
+      rgba(255, 246, 214, 0.14) 42%,
+      transparent 68%
+    );
+    mix-blend-mode: soft-light;
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+  &:hover::before,
+  &:hover::after {
+    opacity: 1;
+  }
+
+  /* icon tiles inside a hovered card do a 3D coin-flip */
+  &:hover :is(div, span)[class*="rounded-"]:is([class*="place-items-center"], [class*="justify-center"]):has(> svg:only-child) {
+    transform: perspective(320px) rotateY(360deg) scale(1.12);
+  }
+
+  /* big money numbers turn to liquid gold on hover */
+  &:hover [class*="text-[clamp"] {
+    background-image: linear-gradient(100deg, #5a4318 0%, #b48a3c 30%, #f0d27f 50%, #b48a3c 70%, #5a4318 100%);
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+            background-clip: text;
+    color: transparent;
+    animation: text-shimmer 2.2s linear infinite;
+  }
+}
+
+/* ==========================================================================
+   ICON TILES: glossy, floating, with a periodic glint
+   ========================================================================== */
+#root main :is(div, span)[class*="rounded-"]:is([class*="place-items-center"], [class*="justify-center"]):has(> svg:only-child) {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background-image: linear-gradient(145deg, rgba(255, 255, 255, 0.42), rgba(255, 255, 255, 0) 55%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85), 0 8px 16px -8px rgba(154, 120, 55, 0.55);
+  /* pointer-parallax depth: --nx/--ny come from the hovered card */
+  translate: calc(var(--nx, 0) * 6px) calc(var(--ny, 0) * 6px);
+  transition: transform 0.9s var(--ease-spring), translate 0.25s ease-out;
+
+  & > svg {
+    animation: icon-float 4.2s ease-in-out infinite;
+  }
+  &::after {
+    content: "";
+    position: absolute;
+    inset: -20% auto -20% 0;
+    width: 55%;
+    z-index: 1;
+    pointer-events: none;
+    background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+    animation: tile-glint 6s ease-in-out infinite;
+  }
+}
+/* de-synchronise the glints so a row of cards doesn't flash in unison */
+#root main :is(div, span):has(> svg:only-child):nth-child(2n)::after { animation-delay: 1.7s; }
+#root main :is(div, span):has(> svg:only-child):nth-child(3n)::after { animation-delay: 3.1s; }
+#root main :is(div, span):has(> svg:only-child):nth-child(4n)::after { animation-delay: 4.4s; }
+
+/* ==========================================================================
+   BUTTONS
+   ========================================================================== */
+
+/* ---- every button: spring press + magnetic offset ---------------------- */
+#root button:not(:disabled):not(aside *) {
+  transition:
+    transform 0.4s var(--ease-spring),
+    background-color 0.25s,
+    border-color 0.25s,
+    color 0.25s,
+    box-shadow 0.35s,
+    opacity 0.25s;
+}
+#root button:not(:disabled):not(aside *):hover {
+  transform: translate3d(var(--tx, 0px), calc(var(--ty, 0px) - 1.5px), 0);
+}
+#root button:not(:disabled):not(aside *):active {
+  transform: translate3d(var(--tx, 0px), var(--ty, 0px), 0) scale(0.94);
+}
+
+/* ripple host: JS adds .fx-ripple-host on press */
+.fx-ripple-host {
+  overflow: hidden;
+}
+.fx-ripple-host:not(.absolute):not(.fixed):not(.sticky) {
+  position: relative;
+}
+.fx-ripple-host::after {
+  content: "";
+  position: absolute;
+  left: var(--rx, 50%);
+  top: var(--ry, 50%);
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(217, 180, 90, 0.55), rgba(217, 180, 90, 0) 65%);
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 0;
+}
+.fx-ripple-host.fx-ripple::after {
+  animation: ripple 0.8s ease-out;
+}
+
+/* ---- secondary / outline buttons -------------------------------------- */
+#root main button[class*="border"][class*="bg-white"]:not(:disabled):hover,
+#root .fixed button[class*="border"][class*="bg-white"]:not(:disabled):hover {
+  background-color: #fffaf0;
+  border-color: var(--gold-400);
+  box-shadow: 0 10px 24px -12px rgba(154, 120, 55, 0.7), 0 0 0 3px rgba(217, 180, 90, 0.16);
+}
+
+/* ---- icon glyph behaviour inside buttons ------------------------------ */
+#root button:not(aside *) > svg {
+  transition: transform 0.5s var(--ease-spring);
+}
+#root button:not(:disabled):not(aside *):hover > svg {
+  animation: icon-wiggle 0.65s var(--ease-spring);
+}
+/* "+" turns a quarter-turn, "reset" spins back, ↗ nudges outward */
+#root button:not(:disabled):hover > svg:has(> path[d="M5 12h14"]) {
+  animation: none;
+  transform: rotate(180deg) scale(1.2);
+}
+#root button:not(:disabled):hover > svg:has(> path[d*="M3 8"]) {
+  animation: none;
+  transform: rotate(-360deg);
+  transition-duration: 0.8s;
+}
+#root button:not(:disabled):hover > svg:has(> path[d="M7 7h10v10"]) {
+  animation: none;
+  transform: translate(3px, -3px) scale(1.15);
+}
+#root button:not(:disabled):hover > span[aria-hidden="true"] {
+  animation: arrow-nudge 0.8s ease-in-out infinite;
+}
+
+/* ---- GOLD CTA: polished metal, breathing glow, travelling glint -------- */
+:is(
+  #root :is(button, a)[class*="bg-[#9a7837]" i]:not([class*="bg-[#9a7837]/" i]),
+  #root :is(button, a)[class*="bg-[#9b7847]" i]:not([class*="bg-[#9b7847]/" i])
+) {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  color: #fffaf0;
+  text-shadow: 0 1px 2px rgba(50, 30, 0, 0.65);
+  border-color: rgba(255, 236, 170, 0.65);
+  background-color: #9a7837;
+  background-image:
+    radial-gradient(110px circle at var(--mx, -200px) var(--my, -200px), rgba(255, 255, 255, 0.55), transparent 70%),
+    linear-gradient(115deg, #6a4d17 0%, #8f6a25 26%, #c39a3b 48%, #8f6a25 68%, #6a4d17 100%);
+  background-size: auto, 260% 100%;
+  background-position: 0 0, 0% 50%;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.5) inset,
+    0 -2px 0 rgba(70, 45, 5, 0.28) inset,
+    0 10px 22px -8px rgba(154, 120, 55, 0.8);
+  transition:
+    background-position 0.9s var(--ease-out-expo),
+    transform 0.4s var(--ease-spring),
+    box-shadow 0.35s,
+    filter 0.3s;
+
+  /* the glint that periodically crosses the metal */
+  &::before {
+    content: "";
+    position: absolute;
+    inset: -2px auto -2px 0;
+    width: 46%;
+    z-index: -1;
+    pointer-events: none;
+    background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.85), transparent);
+    animation: glint 5.5s ease-in-out infinite;
+  }
+  &:hover {
+    background-position: 0 0, 100% 50%;
+    filter: saturate(1.15) brightness(1.04);
+    transform: translate3d(var(--tx, 0px), calc(var(--ty, 0px) - 2px), 0) scale(1.035);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.6) inset,
+      0 -2px 0 rgba(70, 45, 5, 0.3) inset,
+      0 18px 34px -10px rgba(154, 120, 55, 0.95),
+      0 0 0 4px rgba(217, 180, 90, 0.25);
+  }
+  &:active {
+    transform: translate3d(var(--tx, 0px), var(--ty, 0px), 0) scale(0.95);
+  }
+  &:disabled {
+    filter: grayscale(0.55);
+  }
+  &:focus-visible {
+    box-shadow: 0 0 0 3px #fff, 0 0 0 6px var(--gold-500);
+  }
+  &::after {
+    /* ripple, restyled to white on gold */
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0) 65%);
+  }
+}
+
+/* ---- Row actions & ghost links ---------------------------------------- */
+#root main button[class*="hover:bg-[#f"],
+#root main button[class*="hover:bg-[#f5efdf]"] {
+  border-radius: 10px;
+}
+#root main button:not(:disabled)[class*="hover:bg-[#f7f2e8]"]:hover,
+#root main button:not(:disabled)[class*="hover:bg-[#f5efdf]"]:hover {
+  box-shadow: 0 8px 18px -10px rgba(154, 120, 55, 0.8);
+}
+
+/* ==========================================================================
+   FORMS
+   ========================================================================== */
+#root :is(input, select, textarea):not([type="checkbox"], [type="radio"], [type="range"]) {
+  transition:
+    border-color 0.3s,
+    box-shadow 0.4s,
+    background-color 0.3s,
+    transform 0.4s var(--ease-spring);
+}
+#root :is(input, select, textarea):not([type="checkbox"], [type="radio"], [type="range"]):hover {
+  border-color: rgba(217, 180, 90, 0.7);
+}
+#root :is(input, select, textarea):not([type="checkbox"], [type="radio"], [type="range"]):focus {
+  border-color: var(--gold-500);
+  background-color: #fffef9;
+  transform: translateY(-1px);
+  box-shadow:
+    0 0 0 4px rgba(217, 180, 90, 0.20),
+    0 14px 28px -14px rgba(154, 120, 55, 0.75);
+}
+/* fields have their own glow; skip the global keyboard-focus outline on them */
+#root :is(input, select, textarea):focus-visible {
+  outline: none;
+}
+#root input::placeholder,
+#root textarea::placeholder {
+  transition: opacity 0.3s;
+}
+#root input:focus::placeholder,
+#root textarea:focus::placeholder {
+  opacity: 0.35;
+}
+
+/* wrappers that contain a focused field light up their label & icon */
+#root label:has(:is(input, select, textarea):focus) {
+  color: var(--gold-700);
+}
+#root div:has(> :is(input[type="search"], input[type="text"]):focus) > svg:first-child {
+  color: var(--gold-600);
+  animation: icon-wiggle 0.6s var(--ease-spring);
+}
+
+/* custom chevron on native selects (skips ones that already draw their own) */
+#root select:not([class*="appearance-none"]) {
+  -webkit-appearance: none;
+          appearance: none;
+  padding-right: 2.1rem;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%239a7837' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'><path d='m6 9 6 6 6-6'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 0.7rem center;
+  background-size: 14px;
+}
+
+#root input[type="checkbox"],
+#root input[type="radio"] {
+  accent-color: var(--gold-600);
+  transition: transform 0.35s var(--ease-spring);
+}
+#root input[type="checkbox"]:active,
+#root input[type="radio"]:active {
+  transform: scale(0.8);
+}
+#root input[type="checkbox"]:checked,
+#root input[type="radio"]:checked {
+  animation: dot-throb 0.4s var(--ease-spring);
+}
+
+/* inline validation: errors shake into view */
+#root [role="alert"] {
+  animation: shake 0.55s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  border: 1px solid rgba(216, 88, 76, 0.35);
+  box-shadow: 0 10px 24px -14px rgba(216, 88, 76, 0.7);
+}
+
+/* ==========================================================================
+   TABLES
+   ========================================================================== */
+#root main thead th {
+  background: linear-gradient(180deg, #fcf8ec, #f6eed8);
+  border-color: rgba(217, 180, 90, 0.35);
+  color: #6f5a2b;
+  letter-spacing: 0.07em;
+}
+#root main tbody tr {
+  transition: background-color 0.3s, box-shadow 0.3s;
+  animation: row-in 0.8s var(--ease-out-expo) backwards;
+  animation-delay: calc(var(--r, 12) * 45ms + 260ms);
+}
+#root main tbody tr:nth-child(1)  { --r: 0; }
+#root main tbody tr:nth-child(2)  { --r: 1; }
+#root main tbody tr:nth-child(3)  { --r: 2; }
+#root main tbody tr:nth-child(4)  { --r: 3; }
+#root main tbody tr:nth-child(5)  { --r: 4; }
+#root main tbody tr:nth-child(6)  { --r: 5; }
+#root main tbody tr:nth-child(7)  { --r: 6; }
+#root main tbody tr:nth-child(8)  { --r: 7; }
+#root main tbody tr:nth-child(9)  { --r: 8; }
+#root main tbody tr:nth-child(10) { --r: 9; }
+#root main tbody tr:nth-child(11) { --r: 10; }
+#root main tbody tr:nth-child(12) { --r: 11; }
+
+#root main tbody tr:hover {
+  background: linear-gradient(90deg, rgba(249, 239, 208, 0.95), rgba(255, 251, 240, 0.35));
+}
+#root main tbody td {
+  transition: box-shadow 0.3s, color 0.3s;
+}
+#root main tbody tr:hover > td:first-child {
+  box-shadow: inset 4px 0 0 var(--gold-500);
+}
+#root main tbody tr:hover > td {
+  color: #1d180b;
+}
+
+/* ==========================================================================
+   BADGES & STATUS DOTS
+   ========================================================================== */
+#root main span[class*="rounded-full"]:is([class*="text-xs"], [class*="text-[10px]"]):not(:empty) {
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0));
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.55), 0 6px 12px -8px currentColor;
+  transition: transform 0.4s var(--ease-spring), box-shadow 0.3s;
+}
+#root main span[class*="rounded-full"]:is([class*="text-xs"], [class*="text-[10px]"]):not(:empty):hover {
+  transform: scale(1.1) rotate(-1.5deg);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.7), 0 10px 18px -8px currentColor;
+}
+/* live dot: a radar ping */
+#root span[class*="h-1.5"][class*="w-1.5"][class*="rounded-full"] {
+  position: relative;
+}
+#root span[class*="h-1.5"][class*="w-1.5"][class*="rounded-full"]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: inherit;
+  animation: ping-out 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+/* ==========================================================================
+   CHARTS
+   ========================================================================== */
+/* Recharts: glowing, breathing curve */
+.recharts-area-curve,
+.recharts-line-curve {
+  filter: drop-shadow(0 6px 10px rgba(217, 180, 90, 0.6));
+}
+.recharts-cartesian-grid line {
+  stroke: rgba(217, 180, 90, 0.35);
+}
+.recharts-tooltip-cursor {
+  stroke: var(--gold-500);
+  stroke-dasharray: 4 5;
+  stroke-width: 1.5;
+}
+.recharts-active-dot circle {
+  transform-box: fill-box;
+  transform-origin: center;
+  fill: #fff6d6;
+  stroke: var(--gold-600);
+  stroke-width: 3;
+  filter: drop-shadow(0 0 8px rgba(217, 180, 90, 1));
+  animation: dot-throb 1.2s ease-in-out infinite;
+}
+.recharts-bar-rectangle path {
+  transition: filter 0.3s;
+}
+.recharts-bar-rectangle path:hover {
+  filter: brightness(1.12) drop-shadow(0 0 8px rgba(217, 180, 90, 0.9));
+}
+/* tooltip: black-glass jewel box (overrides recharts' inline styles) */
+.recharts-default-tooltip {
+  background: linear-gradient(160deg, rgba(36, 31, 18, 0.95), rgba(16, 14, 8, 0.95)) !important;
+  border: 1px solid rgba(232, 205, 133, 0.6) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 24px 50px -16px rgba(0, 0, 0, 0.65), 0 0 30px -6px rgba(217, 180, 90, 0.5) !important;
+  -webkit-backdrop-filter: blur(10px);
+          backdrop-filter: blur(10px);
+  padding: 10px 14px !important;
+  animation: modal-in 0.4s var(--ease-spring) backwards;
+}
+.recharts-tooltip-label {
+  color: #bdae82 !important;
+  margin-bottom: 4px !important;
+}
+.recharts-tooltip-item {
+  color: #f6dd96 !important;
+  font-weight: 700;
+}
+
+/* Hand-built bar chart on the Sales Report page */
+#root main [class*="rounded-t-md"][class*="bg-[#9a7837]"] {
+  background-image: linear-gradient(180deg, #f3dc98 0%, #c39a3b 45%, #8a6828 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  transform-origin: 50% 100%;
+  animation: bar-grow 1.3s var(--ease-spring) backwards;
+  animation-delay: calc(var(--bi, 0) * 110ms + 350ms);
+}
+#root main [class*="items-end"][class*="border-b"] > div:nth-child(1) { --bi: 0; }
+#root main [class*="items-end"][class*="border-b"] > div:nth-child(2) { --bi: 1; }
+#root main [class*="items-end"][class*="border-b"] > div:nth-child(3) { --bi: 2; }
+#root main [class*="items-end"][class*="border-b"] > div:nth-child(4) { --bi: 3; }
+#root main [class*="items-end"][class*="border-b"] > div:nth-child(5) { --bi: 4; }
+#root main [class*="items-end"][class*="border-b"] > div:nth-child(6) { --bi: 5; }
+#root main [class*="items-end"][class*="border-b"] > div:nth-child(7) { --bi: 6; }
+#root main [class*="items-end"][class*="border-b"] > div:nth-child(8) { --bi: 7; }
+#root main .group[class*="rounded-t-md"] {
+  position: relative;
+  background-color: rgba(217, 180, 90, 0.14);
+}
+#root main .group[class*="rounded-t-md"]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent 35%, rgba(255, 255, 255, 0.75) 50%, transparent 65%);
+  animation: bar-glint 3.2s ease-in-out infinite;
+}
+#root main .group[class*="rounded-t-md"]:hover > div {
+  filter: brightness(1.14) saturate(1.25);
+  box-shadow: 0 0 22px rgba(217, 180, 90, 0.9);
+}
+
+/* ==========================================================================
+   MODALS: blurred vault doors; panel swings in from depth with a gold
+   light orbiting its rim
+   ========================================================================== */
+#root .fixed.inset-0 {
+  background: radial-gradient(120% 90% at 50% 30%, rgba(74, 56, 19, 0.45), rgba(14, 11, 5, 0.80));
+  -webkit-backdrop-filter: blur(9px) saturate(1.25);
+          backdrop-filter: blur(9px) saturate(1.25);
+  animation: backdrop-in 0.45s ease-out backwards;
+}
+#root .fixed.inset-0 > div {
+  border: 1.5px solid transparent;
+  background:
+    linear-gradient(180deg, #fffdf6, #fbf5e4) padding-box,
+    conic-gradient(from var(--angle), #9a7837, #fff3c4, #d9b45a, rgba(217, 180, 90, 0.15) 45%, #9a7837 70%, #f3e2b0, #9a7837) border-box;
+  box-shadow:
+    0 60px 120px -30px rgba(0, 0, 0, 0.7),
+    0 0 90px -24px rgba(217, 180, 90, 0.6);
+  animation:
+    modal-in 0.85s var(--ease-spring) backwards,
+    spin-angle 6s linear infinite;
+}
+/* sticky modal headers must not paint a flat white strip over the glow */
+#root .fixed.inset-0 [class*="sticky"] {
+  background: linear-gradient(180deg, #fffdf6, #fcf7e8);
+  border-color: rgba(217, 180, 90, 0.3);
+}
+#root .fixed button[aria-label^="Close"]:hover {
+  transform: rotate(90deg) scale(1.15);
+  background-color: #fdeceb;
+  color: #b23a32;
+}
+
+/* ==========================================================================
+   Mobile sidebar backdrop shares .fixed.inset-0: keep it light
+   ========================================================================== */
+#root .fixed.inset-0[class*="md:hidden"] {
+  background: rgba(12, 10, 4, 0.5);
+  animation: backdrop-in 0.3s ease-out backwards;
+}

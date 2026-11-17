@@ -1,0 +1,383 @@
+/* ==========================================================================
+   FX: ambient background, 3D gems, scroll progress, cursor, sparkles
+   (DOM for all of this is created by src/effects/initEffects.js)
+   ========================================================================== */
+
+/* ---- Fixed backdrop layer --------------------------------------------- */
+.fx-root {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  /* pointer parallax, written by JS, range -1..1 */
+  --px: 0;
+  --py: 0;
+}
+
+/* Aurora: four huge blurred colour pools that drift slowly */
+.fx-aurora {
+  position: absolute;
+  inset: 0;
+  transform: translate3d(calc(var(--px) * -26px), calc(var(--py) * -18px), 0);
+}
+.fx-aurora i {
+  position: absolute;
+  border-radius: 50%;
+  /* no filter:blur here on purpose: the radial gradients are already
+     soft-edged, and blurring four viewport-sized layers is very expensive */
+  will-change: transform;
+}
+.fx-aurora i:nth-child(1) {
+  width: 62vw; height: 62vw; left: -18vw; top: -26vw;
+  background: radial-gradient(circle, rgba(244, 214, 132, 0.72), transparent 66%);
+  animation: aurora-a 28s ease-in-out infinite;
+}
+.fx-aurora i:nth-child(2) {
+  width: 54vw; height: 54vw; right: -16vw; top: -14vw;
+  background: radial-gradient(circle, rgba(238, 158, 142, 0.62), transparent 66%);
+  animation: aurora-b 34s ease-in-out infinite;
+}
+.fx-aurora i:nth-child(3) {
+  width: 58vw; height: 58vw; right: -20vw; bottom: -26vw;
+  background: radial-gradient(circle, rgba(120, 154, 240, 0.52), transparent 66%);
+  animation: aurora-c 38s ease-in-out infinite;
+}
+.fx-aurora i:nth-child(4) {
+  width: 48vw; height: 48vw; left: -14vw; bottom: -22vw;
+  background: radial-gradient(circle, rgba(110, 204, 170, 0.46), transparent 66%);
+  animation: aurora-a 42s ease-in-out infinite reverse;
+}
+
+/* Slow sweeping light beams, like a spot rig over a jewellery counter */
+.fx-rays {
+  position: absolute;
+  left: -34vmax;
+  top: -34vmax;
+  width: 100vmax;
+  height: 100vmax;
+  opacity: 0.55;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0 8deg,
+    rgba(255, 238, 178, 0.55) 13deg,
+    transparent 19deg 58deg,
+    rgba(255, 238, 178, 0.40) 64deg,
+    transparent 71deg 136deg,
+    rgba(255, 238, 178, 0.50) 143deg,
+    transparent 151deg 226deg,
+    rgba(255, 238, 178, 0.36) 234deg,
+    transparent 243deg 300deg,
+    rgba(255, 238, 178, 0.44) 308deg,
+    transparent 316deg
+  );
+  -webkit-mask-image: radial-gradient(circle, #000 0%, transparent 60%);
+          mask-image: radial-gradient(circle, #000 0%, transparent 60%);
+  animation: rays-spin 120s linear infinite;
+  will-change: transform;
+}
+
+/* Fine film grain: stops big gradients from looking digital */
+.fx-grain {
+  position: absolute;
+  inset: 0;
+  opacity: 0.09;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .35  0 0 0 0 .26  0 0 0 0 .1  0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+.fx-dust {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* ---- 3D gemstones: real CSS 3D bipyramids ----------------------------- */
+.fx-gems {
+  position: absolute;
+  inset: 0;
+}
+
+/* 1) outer: pointer parallax (depth-scaled) */
+.fx-gem {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: 0;
+  height: 0;
+  opacity: var(--o, 0.6);
+  transform: translate3d(
+    calc(var(--px) * var(--depth, 0.5) * -64px),
+    calc(var(--py) * var(--depth, 0.5) * -48px),
+    0
+  );
+}
+
+/* 2) float + perspective.
+   No CSS filter here on purpose: a filter around constantly-spinning content
+   is recomputed every frame. The soft coloured shadow is a static gradient. */
+.fx-gem-body {
+  position: relative;
+  perspective: 820px;
+  animation: gem-float var(--float, 10s) ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+.fx-gem-body::after {
+  content: "";
+  position: absolute;
+  left: calc(var(--s, 1) * -60px);
+  top: calc(var(--s, 1) * 78px);
+  width: calc(var(--s, 1) * 120px);
+  height: calc(var(--s, 1) * 36px);
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--c) 45%, transparent), transparent);
+  pointer-events: none;
+}
+
+/* 3) the spinning solid */
+.fx-gem-spin {
+  position: relative;
+  transform-style: preserve-3d;
+  scale: var(--s, 1);
+  animation: gem-spin var(--spin, 24s) linear infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+/* 8 triangular facets: 4 crown + 4 pavilion.
+   Geometry: square girdle 84px, crown 34px tall, pavilion 60px deep.
+   crown tilt = atan(42/34)=51deg  |  pavilion tilt = atan(42/60)=35deg      */
+.fx-gem-spin i {
+  position: absolute;
+  left: -42px;
+  width: 84px;
+  background:
+    linear-gradient(150deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 46%),
+    color-mix(in srgb, var(--c) var(--m, 70%), white);
+  opacity: 0.8;
+}
+.fx-gem-spin i:nth-child(-n + 4) {
+  bottom: 0;
+  height: 54px;
+  transform-origin: 50% 100%;
+  clip-path: polygon(50% 0, 0 100%, 100% 100%);
+}
+.fx-gem-spin i:nth-child(n + 5) {
+  top: 0;
+  height: 73px;
+  transform-origin: 50% 0;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+}
+.fx-gem-spin i:nth-child(1) { transform: rotateY(0deg)   translateZ(42px) rotateX(51deg);  --m: 42%; }
+.fx-gem-spin i:nth-child(2) { transform: rotateY(90deg)  translateZ(42px) rotateX(51deg);  --m: 80%; }
+.fx-gem-spin i:nth-child(3) { transform: rotateY(180deg) translateZ(42px) rotateX(51deg);  --m: 100%; }
+.fx-gem-spin i:nth-child(4) { transform: rotateY(270deg) translateZ(42px) rotateX(51deg);  --m: 58%; }
+.fx-gem-spin i:nth-child(5) { transform: rotateY(0deg)   translateZ(42px) rotateX(-35deg); --m: 72%; }
+.fx-gem-spin i:nth-child(6) { transform: rotateY(90deg)  translateZ(42px) rotateX(-35deg); --m: 96%; }
+.fx-gem-spin i:nth-child(7) { transform: rotateY(180deg) translateZ(42px) rotateX(-35deg); --m: 50%; }
+.fx-gem-spin i:nth-child(8) { transform: rotateY(270deg) translateZ(42px) rotateX(-35deg); --m: 86%; }
+
+/* ---- Scroll progress: a gold thread across the very top ---------------- */
+.fx-progress {
+  position: fixed;
+  inset: 0 0 auto 0;
+  height: 3px;
+  z-index: 2147483001;
+  pointer-events: none;
+}
+.fx-progress b {
+  display: block;
+  height: 100%;
+  transform-origin: 0 50%;
+  transform: scaleX(var(--p, 0));
+  background: linear-gradient(90deg, #9a7837, #f3e2b0, #d9b45a, #fff6d6, #9a7837);
+  background-size: 300% 100%;
+  animation: hairline-flow 4s linear infinite;
+  box-shadow: 0 0 12px rgba(217, 180, 90, 0.95), 0 0 2px #fff;
+  border-radius: 0 3px 3px 0;
+}
+
+/* ==========================================================================
+   CUSTOM CURSOR: a gold jewel + an orbiting ring that morphs by context
+
+   Structure: a zero-size WRAPPER is positioned by JS (transform: translate3d)
+   and an inner SHAPE carries every visual. This matters: the individual
+   `rotate`/`scale` properties apply BEFORE `transform`, so putting them on
+   the element JS moves would rotate/scale its position vector and fling it
+   across the screen.
+   ========================================================================== */
+.fx-cursor-ring,
+.fx-cursor-dot {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  z-index: 2147483000;
+  opacity: 0;
+  transition: opacity 0.3s;
+  will-change: transform;
+}
+
+/* Only hide the native cursor once our cursor is live (JS adds this class
+   on the first real mouse move), so nobody is ever left without a pointer */
+html.fx-cursor-on,
+html.fx-cursor-on * {
+  cursor: none !important;
+}
+html.fx-cursor-on .fx-cursor-ring,
+html.fx-cursor-on .fx-cursor-dot {
+  opacity: 1;
+}
+html.fx-cursor-on.fx-cursor-away .fx-cursor-ring,
+html.fx-cursor-on.fx-cursor-away .fx-cursor-dot {
+  opacity: 0;
+}
+
+.fx-cursor-ring > i {
+  position: absolute;
+  left: 0;
+  top: 0;
+  translate: -50% -50%;
+  width: 40px;
+  height: 40px;
+  padding: 1.6px;
+  border-radius: 50%;
+  /* rotating gold arc, drawn as a masked conic gradient */
+  background: conic-gradient(
+    from var(--angle),
+    rgba(217, 180, 90, 0) 0%,
+    #fff3c4 14%,
+    #c39a3b 38%,
+    rgba(217, 180, 90, 0) 60%,
+    #e8cd85 84%,
+    rgba(217, 180, 90, 0) 100%
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  animation: spin-angle 2.4s linear infinite;
+  transition:
+    width 0.4s var(--ease-spring),
+    height 0.4s var(--ease-spring),
+    border-radius 0.4s var(--ease-spring),
+    scale 0.25s var(--ease-spring);
+}
+
+.fx-cursor-dot > i {
+  position: absolute;
+  left: 0;
+  top: 0;
+  translate: -50% -50%;
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+  rotate: 45deg;
+  background: linear-gradient(135deg, #fff9df 0%, #e8cd85 45%, #9a7837 100%);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.75), 0 0 12px 2px rgba(217, 180, 90, 0.85);
+  transition:
+    scale 0.3s var(--ease-spring),
+    background 0.25s,
+    box-shadow 0.25s;
+}
+
+/* Over links / buttons: ring snaps into a spinning diamond, dot swells to a halo */
+html[data-fx-cursor="link"] .fx-cursor-ring > i {
+  width: 58px;
+  height: 58px;
+  border-radius: 15px;
+  animation: spin-angle 2.4s linear infinite, ring-diamond 7s linear infinite;
+}
+html[data-fx-cursor="link"] .fx-cursor-dot > i {
+  scale: 2.6;
+  background: radial-gradient(circle, rgba(255, 244, 200, 0.95), rgba(217, 180, 90, 0.35));
+  box-shadow: 0 0 22px 6px rgba(217, 180, 90, 0.55);
+}
+
+/* Over text fields: the ring becomes a gold text caret */
+html[data-fx-cursor="text"] .fx-cursor-ring > i {
+  width: 4px;
+  height: 32px;
+  border-radius: 4px;
+  padding: 2px;
+}
+html[data-fx-cursor="text"] .fx-cursor-dot > i {
+  scale: 0;
+}
+
+/* Disabled controls */
+html[data-fx-cursor="disabled"] .fx-cursor-ring > i {
+  background: conic-gradient(#d8584c, #f2a49c, #d8584c);
+  scale: 0.8;
+}
+html[data-fx-cursor="disabled"] .fx-cursor-dot > i {
+  background: linear-gradient(135deg, #ffd9d4, #d8584c);
+  box-shadow: 0 0 12px 2px rgba(216, 88, 76, 0.7);
+}
+
+/* Pressed */
+html[data-fx-press] .fx-cursor-ring > i { scale: 0.7; }
+html[data-fx-press] .fx-cursor-dot > i  { scale: 1.9; }
+
+/* ---- Sparkles + click shockwave --------------------------------------- */
+.fx-sparks {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 2147482999;
+}
+.fx-spark {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--sz, 10px);
+  height: var(--sz, 10px);
+  background: radial-gradient(circle, #fff 0 18%, var(--sc, #e8cd85) 62%);
+  /* 4-point star */
+  clip-path: polygon(50% 0, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0 50%, 39% 39%);
+  animation: spark-fly var(--dur, 0.9s) cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
+}
+.fx-wave {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 3px solid rgba(217, 180, 90, 0.9);
+  box-shadow: 0 0 18px rgba(232, 205, 133, 0.8), inset 0 0 14px rgba(232, 205, 133, 0.5);
+  animation: wave-out 0.75s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+}
+
+/* ---- Small screens: calm the backdrop ---------------------------------- */
+@media (max-width: 768px) {
+  .fx-gem:nth-child(n + 4) { display: none; }
+  .fx-rays { opacity: 0.35; }
+}
+
+/* ==========================================================================
+   LITE MODE: applied automatically by initEffects.js when the first seconds
+   of rendering run below ~28fps. Keeps the look, drops the expensive layers.
+   ========================================================================== */
+html.fx-lite .fx-rays,
+html.fx-lite .fx-gems,
+html.fx-lite .fx-dust,
+html.fx-lite .fx-grain {
+  display: none;
+}
+html.fx-lite .fx-aurora i {
+  animation: none;
+}
+html.fx-lite #root > div > main > header,
+html.fx-lite #root .fixed.inset-0,
+html.fx-lite .recharts-default-tooltip {
+  -webkit-backdrop-filter: none;
+          backdrop-filter: none;
+}
+/* loops play once and stop instead of repeating forever */
+html.fx-lite *,
+html.fx-lite *::before,
+html.fx-lite *::after {
+  animation-iteration-count: 1 !important;
+}
