@@ -1,0 +1,1089 @@
+/* ============================================================================
+   JMS — Premium Atelier UI
+   A calmer luxury system: porcelain surfaces, deep forest navigation,
+   champagne accents, deliberate motion and a clearer data hierarchy.
+   This file is intentionally the final stylesheet layer so the existing
+   React markup, Tailwind layout utilities and application data stay intact.
+   ============================================================================ */
+
+:root {
+  color-scheme: light;
+  --jms-ink: #202720;
+  --jms-ink-soft: #424b43;
+  --jms-muted: #81877f;
+  --jms-muted-light: #a1a69e;
+  --jms-canvas: #f5f6f2;
+  --jms-surface: #ffffff;
+  --jms-surface-soft: #fafbf8;
+  --jms-line: #e8ebe4;
+  --jms-line-strong: #dce2d8;
+  --jms-gold: #b18b4b;
+  --jms-gold-deep: #92703a;
+  --jms-gold-pale: #f5efe2;
+  --jms-forest: #17231d;
+  --jms-forest-soft: #223229;
+  --jms-radius: 18px;
+  --jms-shadow: 0 2px 8px rgba(30, 42, 33, 0.035), 0 14px 36px rgba(30, 42, 33, 0.045);
+  --jms-shadow-hover: 0 6px 14px rgba(30, 42, 33, 0.055), 0 22px 42px rgba(30, 42, 33, 0.085);
+  --jms-ease: cubic-bezier(0.2, 0.75, 0.25, 1);
+  --jms-spring: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+html {
+  background: var(--jms-canvas);
+  scroll-behavior: smooth;
+}
+
+body {
+  color: var(--jms-ink);
+  background:
+    radial-gradient(ellipse at 92% 0%, rgba(221, 211, 184, 0.17), transparent 34rem),
+    linear-gradient(180deg, #f8f9f6 0%, var(--jms-canvas) 54%, #f3f5f0 100%);
+  font-family: var(--font-body);
+}
+
+#root {
+  isolation: isolate;
+  min-height: 100vh;
+}
+
+#root > div.min-h-screen {
+  background: transparent !important;
+}
+
+#root main {
+  min-width: 0;
+  background: transparent;
+}
+
+#root main > div.w-full {
+  width: 100%;
+  max-width: 1680px;
+  margin-inline: auto;
+  padding: 30px clamp(18px, 2.2vw, 36px) 42px;
+}
+
+#root main h1,
+#root main h2,
+#root main h3,
+#root main h4 {
+  color: var(--jms-ink);
+  letter-spacing: -0.025em;
+}
+
+#root main h1,
+#root main h2 {
+  font-family: var(--font-display);
+  font-weight: 700;
+}
+
+#root main h2 {
+  font-size: clamp(1.55rem, 2.15vw, 2.05rem);
+  line-height: 1.12;
+}
+
+#root main h3 {
+  font-size: 0.98rem;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+
+#root main p {
+  color: var(--jms-muted);
+}
+
+/* Keep page copy readable and avoid the old, overly decorative gradients. */
+#root main [class*="text-[#89867d]"],
+#root main [class*="text-[#898276]"],
+#root main [class*="text-[#77746b]"] {
+  color: var(--jms-muted) !important;
+}
+
+/* --------------------------------------------------------------------------
+   Navigation rail — deep forest, quiet gold details, strong active state
+   -------------------------------------------------------------------------- */
+#root aside {
+  isolation: isolate;
+  border: 0 !important;
+  border-right: 1px solid rgba(221, 202, 155, 0.13) !important;
+  background:
+    radial-gradient(ellipse at 0% 0%, rgba(183, 147, 83, 0.12), transparent 48%),
+    linear-gradient(180deg, #1c2a22 0%, #17231d 50%, #141f19 100%) !important;
+  box-shadow: 12px 0 34px rgba(22, 34, 26, 0.08);
+}
+
+#root aside::before {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 1px;
+  background: linear-gradient(180deg, transparent, rgba(204, 173, 113, 0.58) 18%, rgba(204, 173, 113, 0.14) 78%, transparent);
+  box-shadow: none;
+  animation: none;
+  pointer-events: none;
+}
+
+#root aside::after {
+  content: none !important;
+}
+
+#root aside > * {
+  position: relative;
+  z-index: 1;
+}
+
+#root aside [class*="border-[#a58a50]"] {
+  border: 1px solid rgba(211, 180, 122, 0.42) !important;
+  border-radius: 13px;
+  background: linear-gradient(145deg, #354438, #253329) !important;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  animation: brand-settle 700ms var(--jms-spring) both;
+}
+
+#root aside [class*="border-[#a58a50]"] svg {
+  color: #d7bd88 !important;
+  filter: none !important;
+  animation: mark-glow 5.5s ease-in-out infinite;
+}
+
+#root aside h2 {
+  color: #f7f5ee !important;
+  background: none !important;
+  -webkit-text-fill-color: currentColor;
+  animation: none !important;
+  letter-spacing: 0.12em;
+}
+
+#root aside [class*="bg-[#302f27]"] {
+  border-color: rgba(224, 211, 181, 0.12) !important;
+  background: rgba(255, 255, 255, 0.055) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
+}
+
+#root aside nav p {
+  color: #9eaa9e !important;
+  font-size: 0.61rem;
+  letter-spacing: 0.14em;
+}
+
+#root aside nav section > div > span {
+  height: 1px;
+  background: rgba(215, 189, 136, 0.28) !important;
+  box-shadow: none !important;
+}
+
+#root aside .group {
+  position: relative;
+  isolation: isolate;
+  border-radius: 11px !important;
+  transition:
+    color 220ms ease,
+    background-color 220ms ease,
+    border-color 220ms ease,
+    transform 260ms var(--jms-spring),
+    box-shadow 260ms ease !important;
+}
+
+#root aside .group::before {
+  content: "";
+  position: absolute;
+  inset: 5px auto 5px 0;
+  z-index: -1;
+  width: 2px;
+  border-radius: 4px;
+  background: #d3b77d;
+  opacity: 0;
+  transform: scaleY(0.35);
+  transition: transform 260ms var(--jms-spring), opacity 180ms ease;
+}
+
+#root aside .group:hover {
+  color: #fff !important;
+  background: rgba(255, 255, 255, 0.075) !important;
+  border-color: rgba(255, 255, 255, 0.04) !important;
+  transform: translateX(2px) !important;
+  box-shadow: none !important;
+}
+
+#root aside .group:hover::before {
+  opacity: 0.5;
+  transform: scaleY(0.8);
+}
+
+#root aside .group:hover > span:first-child svg {
+  color: #e2c991 !important;
+  animation: nav-icon-nudge 420ms var(--jms-spring) both;
+}
+
+#root aside a[aria-current="page"] {
+  color: #f7e8c4 !important;
+  border-color: rgba(214, 186, 128, 0.2) !important;
+  background: linear-gradient(100deg, rgba(183, 147, 83, 0.2), rgba(183, 147, 83, 0.075)) !important;
+  box-shadow: inset 0 0 0 1px rgba(214, 186, 128, 0.035) !important;
+}
+
+#root aside a[aria-current="page"]::before {
+  opacity: 1;
+  transform: scaleY(1);
+}
+
+#root aside a[aria-current="page"]::after {
+  content: none !important;
+  animation: none !important;
+}
+
+#root aside a[aria-current="page"] > span:first-child svg {
+  color: #e4c98e !important;
+  animation: active-icon-in 380ms var(--jms-spring) both;
+}
+
+#root aside [class*="border-[#bca66e]"] {
+  border: 1px solid rgba(214, 186, 128, 0.58) !important;
+  background: #354236 !important;
+  animation: avatar-in 700ms var(--jms-spring) both;
+}
+
+#root aside [aria-label="Logout"]:hover {
+  color: #f1b5a9 !important;
+  background: rgba(205, 106, 91, 0.12) !important;
+  box-shadow: none !important;
+  transform: translateY(-1px) !important;
+}
+
+/* --------------------------------------------------------------------------
+   Topbar — airy, crisp and functional
+   -------------------------------------------------------------------------- */
+#root > div > main > header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  min-height: 76px;
+  border-bottom: 1px solid rgba(224, 229, 220, 0.9) !important;
+  background: rgba(250, 251, 248, 0.9) !important;
+  box-shadow: 0 5px 20px rgba(34, 47, 36, 0.025) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(1.12);
+  backdrop-filter: blur(18px) saturate(1.12);
+  animation: topbar-in 650ms var(--jms-spring) both;
+}
+
+#root > div > main > header::after {
+  content: none !important;
+  animation: none !important;
+}
+
+#root > div > main > header label {
+  min-height: 40px;
+  width: 240px;
+  border: 1px solid var(--jms-line) !important;
+  border-radius: 11px !important;
+  background: #f5f7f3 !important;
+  transition: border-color 220ms ease, background-color 220ms ease, box-shadow 220ms ease !important;
+}
+
+#root > div > main > header label:hover {
+  transform: none !important;
+}
+
+#root > div > main > header label:focus-within {
+  width: 260px;
+  border-color: rgba(177, 139, 75, 0.65) !important;
+  background: #fff !important;
+  box-shadow: 0 0 0 3px rgba(177, 139, 75, 0.1) !important;
+}
+
+#root > div > main > header label > span {
+  border: 1px solid #e4e8e0 !important;
+  border-radius: 5px;
+  background: #fff !important;
+  box-shadow: none !important;
+  color: #92988f !important;
+}
+
+#root > div > main > header [aria-label="Notifications"] {
+  border-color: var(--jms-line) !important;
+  background: #fff !important;
+  transition: background-color 200ms ease, border-color 200ms ease, transform 200ms ease !important;
+}
+
+#root > div > main > header [aria-label="Notifications"]:hover {
+  border-color: #d8c69f !important;
+  background: var(--jms-gold-pale) !important;
+}
+
+#root > div > main > header [aria-label="Notifications"] svg {
+  animation: none !important;
+}
+
+#root > div > main > header [aria-label="Notifications"] > span::after {
+  content: none !important;
+  animation: none !important;
+}
+
+#root > div > main > header [class*="rounded-[9px]"][class*="border-[#e9e6de]"]:not(button) {
+  border-color: var(--jms-line) !important;
+  background: #fff !important;
+}
+
+#root > div > main > header [aria-label="User profile"] > span:first-child {
+  border: 1px solid #d8c69f !important;
+  background: var(--jms-gold-pale) !important;
+  animation: avatar-in 700ms var(--jms-spring) both !important;
+}
+
+/* --------------------------------------------------------------------------
+   Page surfaces and content cards
+   -------------------------------------------------------------------------- */
+#root main article,
+#root main section[class*="rounded-xl"][class*="bg-white"],
+#root main section[class*="rounded-[14px]"][class*="bg-white"],
+#root main div[class*="rounded-xl"][class*="border"][class*="bg-white"],
+#root main div[class*="rounded-[14px]"][class*="border"][class*="bg-white"] {
+  border-color: var(--jms-line) !important;
+  border-radius: var(--jms-radius) !important;
+  background: var(--jms-surface) !important;
+  box-shadow: var(--jms-shadow) !important;
+  transform: none;
+  transition:
+    transform 320ms var(--jms-spring),
+    box-shadow 320ms ease,
+    border-color 260ms ease !important;
+  animation: card-appear 720ms var(--jms-spring) both;
+}
+
+#root main article:hover,
+#root main section[class*="rounded-xl"][class*="bg-white"]:hover,
+#root main section[class*="rounded-[14px]"][class*="bg-white"]:hover,
+#root main div[class*="rounded-xl"][class*="border"][class*="bg-white"]:hover,
+#root main div[class*="rounded-[14px]"][class*="border"][class*="bg-white"]:hover {
+  border-color: #dfe4d9 !important;
+  box-shadow: var(--jms-shadow-hover) !important;
+  transform: translateY(-2px);
+}
+
+#root main article::before,
+#root main article::after {
+  content: none !important;
+  display: none !important;
+  animation: none !important;
+}
+
+#root main article:nth-of-type(2) { animation-delay: 70ms; }
+#root main article:nth-of-type(3) { animation-delay: 130ms; }
+#root main article:nth-of-type(4) { animation-delay: 190ms; }
+
+/* Small nested summary tiles: distinguish them without adding visual noise. */
+#root main article div[class*="rounded-[11px]"][class*="border"],
+#root main article div[class*="rounded-[10px]"][class*="border"],
+#root main section > div[class*="rounded-lg"][class*="border"] {
+  border-color: #edf0ea !important;
+  background-color: var(--jms-surface-soft) !important;
+  box-shadow: none !important;
+  transition: background-color 220ms ease, border-color 220ms ease, transform 220ms var(--jms-spring) !important;
+}
+
+#root main article div[class*="rounded-[11px]"][class*="border"]:hover,
+#root main article div[class*="rounded-[10px]"][class*="border"]:hover {
+  border-color: #e1d6bd !important;
+  background-color: #fffefa !important;
+  transform: translateY(-1px);
+}
+
+/* Icon blocks use a quiet champagne wash; animate on hover, not constantly. */
+#root main :is(article, section) :is(div, span)[class*="rounded-"]:has(> svg:only-child) {
+  box-shadow: none !important;
+  background-image: none !important;
+  translate: none !important;
+  transition: transform 300ms var(--jms-spring), background-color 220ms ease !important;
+}
+
+#root main article:hover :is(div, span)[class*="rounded-"]:has(> svg:only-child) {
+  transform: translateY(-2px) scale(1.035);
+}
+
+#root main :is(article, section) :is(div, span)[class*="rounded-"]:has(> svg:only-child) > svg {
+  animation: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   Buttons and links — tactile but restrained
+   -------------------------------------------------------------------------- */
+#root main button:not(:disabled):not(aside *),
+#root main a[class*="rounded"] {
+  transition:
+    transform 220ms var(--jms-spring),
+    color 180ms ease,
+    background-color 200ms ease,
+    border-color 200ms ease,
+    box-shadow 220ms ease !important;
+}
+
+#root main button:not(:disabled):not(aside *):hover,
+#root main a[class*="rounded"]:hover {
+  transform: translateY(-1px) !important;
+}
+
+#root main button:not(:disabled):not(aside *):active,
+#root main a[class*="rounded"]:active {
+  transform: translateY(0) scale(0.985) !important;
+}
+
+#root main button:not(:disabled):not(aside *) > svg {
+  transition: transform 260ms var(--jms-spring), color 180ms ease !important;
+  animation: none !important;
+}
+
+#root main button:not(:disabled):not(aside *):hover > svg {
+  transform: translateY(-1px);
+}
+
+#root main button[class*="bg-[#9a7837]" i],
+#root main button[class*="bg-[#9b7847]" i],
+#root main a[class*="bg-[#9a7837]" i],
+#root main a[class*="bg-[#9b7847]" i] {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border: 1px solid #a9874b !important;
+  border-radius: 11px !important;
+  color: #fff !important;
+  background: linear-gradient(120deg, #96723b, #b18b4b 52%, #98733d) !important;
+  box-shadow: 0 5px 14px rgba(145, 108, 50, 0.16) !important;
+  text-shadow: none !important;
+}
+
+#root main button[class*="bg-[#9a7837]" i]::after,
+#root main button[class*="bg-[#9b7847]" i]::after,
+#root main a[class*="bg-[#9a7837]" i]::after,
+#root main a[class*="bg-[#9b7847]" i]::after {
+  content: "";
+  position: absolute;
+  top: -40%;
+  bottom: -40%;
+  left: -55%;
+  width: 34%;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+  transform: skewX(-18deg);
+  transition: left 650ms var(--jms-ease);
+}
+
+#root main button[class*="bg-[#9a7837]" i]:hover::after,
+#root main button[class*="bg-[#9b7847]" i]:hover::after,
+#root main a[class*="bg-[#9a7837]" i]:hover::after,
+#root main a[class*="bg-[#9b7847]" i]:hover::after {
+  left: 125%;
+}
+
+#root main button[class*="border"][class*="bg-white"]:not(:disabled):hover,
+#root .fixed button[class*="border"][class*="bg-white"]:not(:disabled):hover {
+  border-color: #d5c39d !important;
+  background: #fffdf8 !important;
+  box-shadow: 0 5px 14px rgba(40, 51, 40, 0.065) !important;
+}
+
+/* --------------------------------------------------------------------------
+   Inputs — clean borders, consistent focus ring and calmer placeholders
+   -------------------------------------------------------------------------- */
+#root main :is(input, select, textarea):not([type="checkbox"], [type="radio"], [type="range"]) {
+  color: var(--jms-ink-soft);
+  border-color: var(--jms-line-strong);
+  border-radius: 10px;
+  background-color: #fff;
+  box-shadow: none;
+  transition: border-color 180ms ease, box-shadow 180ms ease, background-color 180ms ease !important;
+}
+
+#root main :is(input, select, textarea):not([type="checkbox"], [type="radio"], [type="range"]):hover {
+  border-color: #cbd3c8 !important;
+}
+
+#root main :is(input, select, textarea):not([type="checkbox"], [type="radio"], [type="range"]):focus {
+  border-color: #b18b4b !important;
+  outline: none !important;
+  background: #fff !important;
+  box-shadow: 0 0 0 3px rgba(177, 139, 75, 0.13) !important;
+  transform: none !important;
+}
+
+#root main :is(input, textarea)::placeholder {
+  color: #a4aaa1 !important;
+  opacity: 1;
+}
+
+#root main label:has(:is(input, select, textarea):focus) {
+  color: var(--jms-ink-soft);
+}
+
+#root main input[type="checkbox"],
+#root main input[type="radio"] {
+  accent-color: var(--jms-gold-deep);
+  transition: transform 180ms var(--jms-spring);
+}
+
+#root main input[type="checkbox"]:active,
+#root main input[type="radio"]:active {
+  transform: scale(0.92);
+}
+
+#root main input[type="checkbox"]:checked,
+#root main input[type="radio"]:checked {
+  animation: selection-pop 260ms var(--jms-spring) both;
+}
+
+#root main select:not([class*="appearance-none"]) {
+  background-position: right 0.7rem center;
+}
+
+#root main [role="alert"] {
+  border-radius: 11px;
+  box-shadow: none !important;
+  animation: alert-enter 380ms var(--jms-spring) both;
+}
+
+/* --------------------------------------------------------------------------
+   Tables — quiet headers, readable rows, clear hover affordance
+   -------------------------------------------------------------------------- */
+#root main table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+#root main thead th {
+  border-color: #e9ede6 !important;
+  background: #f6f8f4 !important;
+  color: #6f796f !important;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.075em;
+  text-transform: uppercase;
+}
+
+#root main tbody tr {
+  background: #fff;
+  transition: background-color 180ms ease !important;
+  animation: row-enter 520ms var(--jms-spring) both;
+  animation-delay: calc(var(--r, 0) * 24ms + 90ms);
+}
+
+#root main tbody tr:nth-child(1) { --r: 0; }
+#root main tbody tr:nth-child(2) { --r: 1; }
+#root main tbody tr:nth-child(3) { --r: 2; }
+#root main tbody tr:nth-child(4) { --r: 3; }
+#root main tbody tr:nth-child(5) { --r: 4; }
+#root main tbody tr:nth-child(6) { --r: 5; }
+#root main tbody tr:nth-child(7) { --r: 6; }
+#root main tbody tr:nth-child(8) { --r: 7; }
+#root main tbody tr:nth-child(9) { --r: 8; }
+#root main tbody tr:nth-child(10) { --r: 9; }
+#root main tbody tr:nth-child(11) { --r: 10; }
+#root main tbody tr:nth-child(12) { --r: 11; }
+
+#root main tbody tr:hover {
+  background: #fafbf7 !important;
+}
+
+#root main tbody td {
+  border-color: #edf0ea !important;
+  color: #4c554c;
+  transition: color 180ms ease, background-color 180ms ease;
+}
+
+#root main tbody tr:hover > td:first-child {
+  box-shadow: inset 2px 0 0 #c4a36a !important;
+}
+
+#root main tbody tr:hover > td {
+  color: #222b23;
+}
+
+/* --------------------------------------------------------------------------
+   Status pills and metrics
+   -------------------------------------------------------------------------- */
+#root main span[class*="rounded-full"]:is([class*="text-xs"], [class*="text-[10px]"]):not(:empty) {
+  box-shadow: none !important;
+  transition: transform 180ms var(--jms-spring), box-shadow 180ms ease;
+}
+
+#root main span[class*="rounded-full"]:is([class*="text-xs"], [class*="text-[10px]"]):not(:empty):hover {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(38, 47, 37, 0.07) !important;
+}
+
+#root main span[class*="h-1.5"][class*="w-1.5"][class*="rounded-full"]::after {
+  content: none !important;
+  animation: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   Charts — refined grid and tooltip, subtle drawing animation
+   -------------------------------------------------------------------------- */
+.recharts-cartesian-grid line {
+  stroke: #e9eee7 !important;
+  stroke-dasharray: 3 5;
+}
+
+.recharts-area-curve,
+.recharts-line-curve {
+  filter: none !important;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  animation: chart-draw 1.5s var(--jms-ease) both;
+}
+
+.recharts-tooltip-cursor {
+  stroke: #c3a36a !important;
+  stroke-dasharray: 3 4;
+  stroke-width: 1;
+}
+
+.recharts-active-dot circle {
+  fill: #fff !important;
+  stroke: #aa8649 !important;
+  stroke-width: 2.5;
+  filter: drop-shadow(0 2px 4px rgba(177, 139, 75, 0.2)) !important;
+  animation: chart-dot 1.8s ease-in-out infinite;
+}
+
+.recharts-default-tooltip {
+  border: 1px solid #e5e9e1 !important;
+  border-radius: 12px !important;
+  background: rgba(255, 255, 255, 0.97) !important;
+  box-shadow: 0 14px 34px rgba(27, 40, 30, 0.12) !important;
+  padding: 10px 13px !important;
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  animation: tooltip-enter 180ms var(--jms-spring) both;
+}
+
+.recharts-tooltip-label {
+  color: #697268 !important;
+}
+
+.recharts-tooltip-item {
+  color: #283229 !important;
+  font-weight: 700;
+}
+
+#root main [class*="rounded-t-md"][class*="bg-[#9a7837]"] {
+  background: linear-gradient(180deg, #d1b77f 0%, #aa8649 100%) !important;
+  box-shadow: none !important;
+  transform-origin: 50% 100%;
+  animation: bar-rise 900ms var(--jms-spring) both;
+  animation-delay: calc(var(--bi, 0) * 65ms + 110ms);
+}
+
+#root main [class*="items-end"][class*="border-b"] > div:nth-child(1) { --bi: 0; }
+#root main [class*="items-end"][class*="border-b"] > div:nth-child(2) { --bi: 1; }
+#root main [class*="items-end"][class*="border-b"] > div:nth-child(3) { --bi: 2; }
+#root main [class*="items-end"][class*="border-b"] > div:nth-child(4) { --bi: 3; }
+#root main [class*="items-end"][class*="border-b"] > div:nth-child(5) { --bi: 4; }
+#root main [class*="items-end"][class*="border-b"] > div:nth-child(6) { --bi: 5; }
+#root main [class*="items-end"][class*="border-b"] > div:nth-child(7) { --bi: 6; }
+#root main [class*="items-end"][class*="border-b"] > div:nth-child(8) { --bi: 7; }
+
+#root main .group[class*="rounded-t-md"]::after {
+  content: none !important;
+  animation: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   Modals — a quiet veil and a crisp elevated panel
+   -------------------------------------------------------------------------- */
+#root .fixed.inset-0:not([class*="md:hidden"]) {
+  background: rgba(18, 29, 22, 0.48) !important;
+  -webkit-backdrop-filter: blur(7px) !important;
+  backdrop-filter: blur(7px) !important;
+  animation: veil-enter 220ms ease-out both !important;
+}
+
+#root .fixed.inset-0:not([class*="md:hidden"]) > div {
+  border: 1px solid #e5e9e1 !important;
+  border-radius: 20px !important;
+  background: #fff !important;
+  box-shadow: 0 28px 80px rgba(12, 23, 16, 0.22) !important;
+  animation: modal-enter 360ms var(--jms-spring) both !important;
+}
+
+#root .fixed.inset-0 [class*="sticky"] {
+  border-color: #edf0ea !important;
+  background: rgba(255, 255, 255, 0.96) !important;
+}
+
+#root .fixed button[aria-label^="Close"]:hover {
+  transform: rotate(4deg) scale(1.04) !important;
+  background: #f8eee9 !important;
+  color: #a64d43 !important;
+}
+
+#root .fixed.inset-0[class*="md:hidden"] {
+  background: rgba(18, 29, 22, 0.42) !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   Login — an editorial split-screen, not a floating glass spectacle
+   -------------------------------------------------------------------------- */
+#root main[class*="h-dvh"] {
+  background: var(--jms-canvas) !important;
+  padding: 14px !important;
+}
+
+#root main[class*="h-dvh"] > div {
+  overflow: hidden;
+  border: 1px solid #e6e9e2 !important;
+  border-radius: 24px !important;
+  background: #fff !important;
+  box-shadow: 0 18px 55px rgba(30, 42, 33, 0.09) !important;
+  transform: none !important;
+  animation: login-enter 750ms var(--jms-spring) both !important;
+}
+
+#root main[class*="h-dvh"] section:first-child {
+  background: #1c2921 !important;
+}
+
+#root main[class*="h-dvh"] section:first-child img[alt="Elegant gold jewellery"] {
+  filter: saturate(0.88) contrast(1.04);
+  animation: login-image-drift 28s ease-in-out infinite alternate !important;
+  translate: none !important;
+}
+
+#root main[class*="h-dvh"] section:first-child::before {
+  content: none !important;
+  animation: none !important;
+}
+
+#root main[class*="h-dvh"] section:first-child::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(16, 25, 19, 0.13), transparent 42%, rgba(12, 20, 15, 0.68));
+  animation: none !important;
+}
+
+#root main[class*="h-dvh"] img[alt="JMS Jewellery"] {
+  filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.14));
+  animation: login-logo-in 850ms var(--jms-spring) both !important;
+}
+
+#root main[class*="h-dvh"] section:first-child [class*="bottom-6"] {
+  translate: none !important;
+}
+
+#root main[class*="h-dvh"] section:first-child [class*="bottom-6"] > * {
+  animation: login-copy-in 750ms var(--jms-spring) both;
+}
+
+#root main[class*="h-dvh"] section:first-child [class*="bottom-6"] > :nth-child(1) { animation-delay: 180ms; }
+#root main[class*="h-dvh"] section:first-child [class*="bottom-6"] > :nth-child(2) { animation-delay: 260ms; }
+#root main[class*="h-dvh"] section:first-child [class*="bottom-6"] > :nth-child(3) { animation-delay: 340ms; }
+#root main[class*="h-dvh"] section:first-child [class*="bottom-6"] > :nth-child(4) { animation-delay: 420ms; }
+
+#root main[class*="h-dvh"] section:first-child h2 {
+  color: #fffaf0 !important;
+  text-shadow: 0 8px 26px rgba(0, 0, 0, 0.28) !important;
+  animation: login-copy-in 850ms var(--jms-spring) 240ms both !important;
+}
+
+#root main[class*="h-dvh"] section:first-child [class*="bottom-6"] > div:last-child > span {
+  animation: none !important;
+  box-shadow: none !important;
+}
+
+#root main[class*="h-dvh"] section:last-child p[class*="uppercase"] {
+  color: var(--jms-gold-deep) !important;
+  background: none !important;
+  -webkit-text-fill-color: currentColor;
+  animation: login-copy-in 600ms var(--jms-spring) 180ms both !important;
+}
+
+#root main[class*="h-dvh"] section:last-child h1 {
+  color: var(--jms-ink) !important;
+  background: none !important;
+  -webkit-text-fill-color: currentColor;
+  animation: login-copy-in 700ms var(--jms-spring) 240ms both !important;
+}
+
+#root main[class*="h-dvh"] section:last-child h1 + p {
+  animation: login-copy-in 650ms var(--jms-spring) 320ms both !important;
+}
+
+#root main[class*="h-dvh"] form > * {
+  animation: login-copy-in 620ms var(--jms-spring) both;
+}
+
+#root main[class*="h-dvh"] form > :nth-child(1) { animation-delay: 380ms; }
+#root main[class*="h-dvh"] form > :nth-child(2) { animation-delay: 460ms; }
+#root main[class*="h-dvh"] form > :nth-child(3) { animation-delay: 540ms; }
+#root main[class*="h-dvh"] form > :nth-child(4) { animation-delay: 620ms; }
+
+#root main[class*="h-dvh"] form button[type="submit"] {
+  min-height: 48px;
+  border-radius: 11px !important;
+  letter-spacing: 0.015em;
+}
+
+/* --------------------------------------------------------------------------
+   FX restraint — retain the slim scroll indicator; remove cursor theatre,
+   floating gemstones, dust, rays and sparkle bursts that compete with data.
+   -------------------------------------------------------------------------- */
+.fx-root,
+.fx-cursor-ring,
+.fx-cursor-dot,
+.fx-sparks {
+  display: none !important;
+}
+
+html.fx-cursor-on,
+html.fx-cursor-on * {
+  cursor: auto !important;
+}
+
+#root button,
+#root a,
+#root select,
+#root [role="button"] {
+  cursor: pointer !important;
+}
+
+.fx-progress {
+  height: 2px !important;
+  opacity: 0.82;
+}
+
+.fx-progress b {
+  background: linear-gradient(90deg, #92703a, #d8c18e, #b18b4b) !important;
+  box-shadow: 0 0 7px rgba(177, 139, 75, 0.35) !important;
+  animation: progress-shimmer 5s linear infinite !important;
+}
+
+/* Neutralize pointer-driven 3D tilt while preserving the hover transitions. */
+#root main article,
+#root main article.fx-tilting,
+#root main[class*="h-dvh"] > div,
+#root main[class*="h-dvh"] > div.fx-tilting {
+  --rx: 0deg;
+  --ry: 0deg;
+  transform: none !important;
+}
+
+#root main button.fx-ripple-host::after {
+  display: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   Motion library — a range of small, purposeful animations
+   -------------------------------------------------------------------------- */
+@keyframes page-enter {
+  from { opacity: 0; transform: translate3d(0, 10px, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+@keyframes topbar-in {
+  from { opacity: 0; transform: translate3d(0, -7px, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+@keyframes card-appear {
+  from { opacity: 0; transform: translate3d(0, 12px, 0) scale(0.995); }
+  to { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+}
+
+@keyframes row-enter {
+  from { opacity: 0; transform: translate3d(0, 6px, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+@keyframes brand-settle {
+  from { opacity: 0; transform: translateY(-5px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes mark-glow {
+  0%, 100% { filter: drop-shadow(0 0 0 rgba(215, 189, 136, 0)); }
+  50% { filter: drop-shadow(0 0 5px rgba(215, 189, 136, 0.24)); }
+}
+
+@keyframes nav-icon-nudge {
+  0% { transform: translateX(0); }
+  45% { transform: translateX(2px); }
+  100% { transform: translateX(0); }
+}
+
+@keyframes active-icon-in {
+  from { opacity: 0.5; transform: scale(0.88); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes avatar-in {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes button-sheen {
+  from { transform: translateX(-150%) skewX(-18deg); }
+  to { transform: translateX(450%) skewX(-18deg); }
+}
+
+@keyframes selection-pop {
+  0% { transform: scale(0.86); }
+  70% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+@keyframes alert-enter {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes chart-draw {
+  from { opacity: 0.25; stroke-dasharray: 1 900; }
+  to { opacity: 1; stroke-dasharray: 900 0; }
+}
+
+@keyframes chart-dot {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.14); }
+}
+
+@keyframes bar-rise {
+  from { opacity: 0.35; transform: scaleY(0.08); }
+  to { opacity: 1; transform: scaleY(1); }
+}
+
+@keyframes tooltip-enter {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes veil-enter {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modal-enter {
+  from { opacity: 0; transform: translateY(12px) scale(0.985); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes login-enter {
+  from { opacity: 0; transform: translateY(12px) scale(0.99); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes login-image-drift {
+  from { transform: scale(1.02); }
+  to { transform: scale(1.085); }
+}
+
+@keyframes login-logo-in {
+  from { opacity: 0; transform: translateY(-7px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes login-copy-in {
+  from { opacity: 0; transform: translateY(9px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes progress-shimmer {
+  from { background-position: 0% 50%; }
+  to { background-position: 200% 50%; }
+}
+
+@media (max-width: 768px) {
+  #root main > div.w-full {
+    padding: 20px 16px 30px;
+  }
+
+  #root > div > main > header {
+    min-height: 68px;
+    gap: 12px;
+  }
+
+  #root > div > main > header label,
+  #root > div > main > header label:focus-within {
+    width: 100%;
+  }
+
+  #root main article,
+  #root main section[class*="rounded-xl"][class*="bg-white"],
+  #root main section[class*="rounded-[14px]"][class*="bg-white"] {
+    border-radius: 15px !important;
+  }
+
+  #root main[class*="h-dvh"] {
+    min-height: 100dvh;
+    height: auto;
+    overflow: auto;
+    padding: 10px !important;
+  }
+
+  #root main[class*="h-dvh"] > div {
+    min-height: calc(100dvh - 20px);
+    border-radius: 18px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  #root main > div.w-full {
+    padding-inline: 13px;
+  }
+
+  #root main h2 {
+    font-size: 1.55rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .fx-progress {
+    display: none !important;
+  }
+}
+
+/* Override legacy route choreography and headline shimmer with one calm reveal. */
+#root > div > main > div:last-child > * > :not(.fixed) {
+  animation: page-enter 620ms var(--jms-spring) backwards !important;
+  animation-delay: calc(var(--i, 0) * 55ms + 50ms) !important;
+}
+
+#root main h1,
+#root main h2[class*="text-2xl"]:not(.font-serif) {
+  width: auto;
+  padding-bottom: 0;
+  color: var(--jms-ink) !important;
+  background: none !important;
+  -webkit-text-fill-color: currentColor;
+  animation: none !important;
+}
+
+#root main[class*="min-h-screen"][class*="items-center"] p:first-child {
+  color: var(--jms-gold-deep) !important;
+  background: none !important;
+  -webkit-text-fill-color: currentColor;
+  animation: none !important;
+}
+
+#root main[class*="min-h-screen"][class*="items-center"] h1 {
+  color: var(--jms-ink) !important;
+  background: none !important;
+  -webkit-text-fill-color: currentColor;
+  animation: page-enter 650ms var(--jms-spring) both !important;
+}

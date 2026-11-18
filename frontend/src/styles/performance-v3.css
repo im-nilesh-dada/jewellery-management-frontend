@@ -1,0 +1,225 @@
+/* ========================================================================
+   JMS V3 · precision motion + responsive polish
+   CSS-only depth where possible; no continuous particle or blur workloads.
+   ======================================================================== */
+
+:root {
+  --jms-motion-fast: 150ms;
+  --jms-motion-base: 240ms;
+  --jms-motion-smooth: cubic-bezier(.2,.72,.22,1);
+  --jms-motion-spring: cubic-bezier(.18,.82,.28,1);
+}
+
+html {
+  scroll-behavior: smooth;
+  scrollbar-gutter: stable;
+}
+
+/* The global theme styles scrollbars on every element. Explicitly override
+   that for the navigation rail: scrolling remains available when needed, but
+   the collapsed rail never shows a track or thumb. */
+#root aside nav {
+  min-height: 0;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+}
+#root aside nav::-webkit-scrollbar,
+#root aside nav::-webkit-scrollbar-track,
+#root aside nav::-webkit-scrollbar-thumb {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+}
+#root aside:not([class*="w-[250px]"]) nav {
+  scrollbar-width: none !important;
+  overflow-y: auto !important;
+}
+#root aside:not([class*="w-[250px]"]) nav::-webkit-scrollbar {
+  display: none !important;
+}
+
+/* Stable sizing prevents flex children and data tables from pushing the
+   application beyond the viewport. */
+#root,
+#root > div,
+#root main,
+#root main > div,
+#root main > div > * {
+  min-width: 0;
+  max-width: 100%;
+}
+#root main {
+  overflow-x: clip;
+}
+#root main table {
+  max-width: 100%;
+}
+#root main :is(.overflow-x-auto, [class*="overflow-x-auto"]) {
+  max-width: 100%;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+}
+#root main .recharts-responsive-container {
+  contain: layout paint;
+}
+
+/* Cards use a small, perspective-based response. The JS tilt is only active
+   for a fine pointer and only while that pointer moves over a card. */
+@media (hover: hover) and (pointer: fine) {
+  #root main article,
+  #root main :is(section, div)[class*="bg-white"][class*="border-[#ebe8e1]"][class*="rounded-"],
+  #root main div[class*="border-[#eeeae2]"][class*="rounded-[11px]"] {
+    transform: perspective(1100px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateZ(0) !important;
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+    transition:
+      transform 260ms var(--jms-motion-smooth),
+      box-shadow 260ms var(--jms-motion-smooth),
+      border-color 220ms ease;
+  }
+
+  #root main article:hover,
+  #root main :is(section, div)[class*="bg-white"][class*="border-[#ebe8e1]"][class*="rounded-"]:hover,
+  #root main div[class*="border-[#eeeae2]"][class*="rounded-[11px]"]:hover {
+    transform: perspective(1100px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translate3d(0, -2px, 0) !important;
+    box-shadow: 0 10px 24px rgba(30, 42, 33, 0.055), 0 24px 42px rgba(30, 42, 33, 0.065);
+  }
+
+  #root main article.fx-tilting,
+  #root main :is(section, div).fx-tilting {
+    transition: transform 110ms linear, box-shadow 260ms var(--jms-motion-smooth), border-color 220ms ease !important;
+  }
+
+  #root main article > :is(h2, h3, header),
+  #root main article > div > :is(h2, h3) {
+    transform: translateZ(5px);
+  }
+}
+
+/* Give interactive controls a tactile response without magnetic movement,
+   layout-affecting animation, or repeated animated icon loops. */
+#root main :is(button, a, [role="button"], select) {
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    transform var(--jms-motion-base) var(--jms-motion-spring),
+    box-shadow var(--jms-motion-base) var(--jms-motion-smooth),
+    border-color var(--jms-motion-fast) ease,
+    background-color var(--jms-motion-fast) ease,
+    color var(--jms-motion-fast) ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  #root main button:not(:disabled):hover,
+  #root main a:hover,
+  #root main [role="button"]:hover {
+    transform: translate3d(0, -1px, 0);
+  }
+}
+#root main button:not(:disabled):active,
+#root main a:active,
+#root main [role="button"]:active {
+  transform: translate3d(0, 0, 0) scale(.985);
+  transition-duration: 90ms;
+}
+
+/* Small, one-shot route/content entrance. Motion stays on opacity and
+   transforms, both cheap to composite on modern browsers. */
+@keyframes jms-content-enter {
+  from { opacity: 0; transform: translate3d(0, 8px, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+#root main > div.w-full > * {
+  animation: jms-content-enter 360ms var(--jms-motion-smooth) both;
+}
+#root main > div.w-full > *:nth-child(2) { animation-delay: 35ms; }
+#root main > div.w-full > *:nth-child(3) { animation-delay: 65ms; }
+
+/* Cursor compositor layers are tiny and only active on mouse/trackpad.
+   Keep the cursor smooth without forcing the rest of the page into GPU layers. */
+.fx-cursor-ring,
+.fx-cursor-dot {
+  will-change: transform;
+  contain: layout style;
+}
+.fx-cursor-ring > i,
+.fx-cursor-dot > i {
+  will-change: transform, scale;
+}
+
+/* Turn off costly decoration on compact devices; retain quick feedback. */
+@media (max-width: 900px) {
+  #root > div > main > header {
+    -webkit-backdrop-filter: blur(10px) saturate(1.08) !important;
+    backdrop-filter: blur(10px) saturate(1.08) !important;
+  }
+  #root main article,
+  #root main :is(section, div)[class*="bg-white"][class*="border-[#ebe8e1]"][class*="rounded-"] {
+    box-shadow: 0 3px 14px rgba(30, 42, 33, .045) !important;
+  }
+}
+
+@media (max-width: 768px) {
+  html { scrollbar-gutter: auto; }
+  #root main > div.w-full {
+    padding: 18px 14px 28px !important;
+  }
+  #root > div > main > header {
+    min-height: 68px !important;
+    padding-inline: 14px !important;
+  }
+  #root main :is(input, select, textarea) {
+    max-width: 100%;
+    min-width: 0;
+  }
+  #root main table {
+    min-width: 620px;
+  }
+  #root main :is([role="dialog"], .fixed [class*="max-w-"]) {
+    max-width: calc(100vw - 24px);
+  }
+}
+
+@media (max-width: 480px) {
+  #root aside:not([class*="w-[250px]"]) {
+    width: 60px !important;
+    padding-inline: 5px !important;
+  }
+  #root > div > main {
+    margin-left: 60px !important;
+  }
+  #root main > div.w-full {
+    padding: 15px 10px 24px !important;
+  }
+  #root > div > main > header {
+    padding-inline: 10px !important;
+  }
+  #root main h1 {
+    font-size: clamp(1.35rem, 6vw, 1.8rem) !important;
+  }
+}
+
+/* Touch and pen users keep the native pointer and don't pay for hover tilt. */
+@media (hover: none), (pointer: coarse) {
+  .fx-cursor-ring,
+  .fx-cursor-dot { display: none !important; }
+  html.fx-cursor-on,
+  html.fx-cursor-on * { cursor: auto !important; }
+  #root main article,
+  #root main :is(section, div)[class*="bg-white"][class*="border-[#ebe8e1]"][class*="rounded-"] {
+    transform: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto !important; }
+  #root main > div.w-full > * { animation: none !important; }
+  #root main :is(article, section, button, a, [role="button"]) {
+    transition: none !important;
+    transform: none !important;
+  }
+}

@@ -1,0 +1,567 @@
+/* ============================================================================
+   JMS · ATELIER / LUXURY INTERFACE PASS
+   Visual-only refinement. No component markup, data, routes or app behavior.
+   Palette: deep aubergine, antique rose-gold, warm porcelain and ink.
+   ============================================================================ */
+
+:root {
+  color-scheme: light;
+  --jms-ink: #29232b;
+  --jms-ink-soft: #514852;
+  --jms-muted: #8d838b;
+  --jms-muted-light: #aaa0a7;
+  --jms-canvas: #f4f0ed;
+  --jms-surface: #fffdfb;
+  --jms-surface-soft: #faf6f3;
+  --jms-line: #e9dfdc;
+  --jms-line-strong: #d9cbc5;
+  --jms-gold: #bd927d;
+  --jms-gold-deep: #946b5c;
+  --jms-gold-pale: #f4e8e1;
+  --jms-forest: #251d2a;
+  --jms-forest-soft: #35283a;
+  --jms-plum: #493445;
+  --jms-rose: #c89583;
+  --jms-shadow: 0 2px 8px rgba(49, 33, 45, 0.035), 0 14px 34px rgba(49, 33, 45, 0.055);
+  --jms-shadow-hover: 0 8px 18px rgba(49, 33, 45, 0.07), 0 24px 48px rgba(49, 33, 45, 0.10);
+}
+
+html { background: var(--jms-canvas); }
+body {
+  color: var(--jms-ink);
+  background:
+    radial-gradient(ellipse at 85% 0%, rgba(206, 169, 151, 0.13), transparent 36rem),
+    radial-gradient(ellipse at 4% 68%, rgba(100, 69, 91, 0.035), transparent 34rem),
+    linear-gradient(180deg, #f8f5f2 0%, #f4f0ed 58%, #f1ece9 100%);
+}
+
+/* Main canvas: warm porcelain rather than a flat grey backdrop. */
+#root > div.min-h-screen { background: transparent !important; }
+#root main { background: transparent !important; }
+#root main > div.w-full {
+  max-width: 1720px;
+  padding: 32px clamp(20px, 2.5vw, 42px) 48px;
+}
+#root main h1,
+#root main h2,
+#root main h3,
+#root main h4 { color: var(--jms-ink) !important; }
+#root main h1,
+#root main h2 { letter-spacing: -0.035em; }
+#root main p { color: var(--jms-muted); }
+
+/* --------------------------------------------------------------------------
+   Sidebar / navigation: aubergine lacquer with warm metal detailing
+   -------------------------------------------------------------------------- */
+#root aside {
+  border-right: 1px solid rgba(216, 180, 161, 0.19) !important;
+  background:
+    radial-gradient(ellipse at 10% 0%, rgba(183, 131, 129, 0.17), transparent 46%),
+    radial-gradient(ellipse at 100% 62%, rgba(127, 89, 118, 0.12), transparent 48%),
+    linear-gradient(180deg, #302333 0%, #261e2b 48%, #201923 100%) !important;
+  box-shadow: 14px 0 40px rgba(37, 27, 40, 0.13) !important;
+}
+#root aside::before {
+  width: 1px;
+  background: linear-gradient(180deg, transparent 2%, rgba(224, 187, 165, 0.74) 20%, rgba(190, 144, 127, 0.28) 75%, transparent 100%) !important;
+  box-shadow: 0 0 12px rgba(199, 151, 130, 0.18) !important;
+}
+#root aside > div:first-child { min-height: 76px; }
+#root aside [class*="border-[#a58a50]"] {
+  width: 43px;
+  height: 43px;
+  border: 1px solid rgba(219, 174, 151, 0.7) !important;
+  border-radius: 14px !important;
+  background: linear-gradient(145deg, #725344 0%, #493546 53%, #302637 100%) !important;
+  box-shadow: 0 7px 22px rgba(12, 8, 15, 0.27), inset 0 1px 0 rgba(255,255,255,0.14) !important;
+}
+#root aside [class*="border-[#a58a50]"] svg {
+  color: #f0d0b6 !important;
+  filter: drop-shadow(0 2px 5px rgba(225, 181, 155, 0.2)) !important;
+  animation: atelier-gem-breathe 4.8s ease-in-out infinite !important;
+}
+#root aside h2 {
+  color: #fff8f2 !important;
+  letter-spacing: 0.19em !important;
+  font-size: 1.28rem !important;
+}
+#root aside h2 + span {
+  color: #d0ad9d !important;
+  letter-spacing: 0.17em !important;
+  font-size: 9px !important;
+}
+#root aside [class*="bg-[#302f27]"] {
+  position: relative;
+  border-color: rgba(220, 185, 166, 0.18) !important;
+  border-radius: 13px !important;
+  background: linear-gradient(115deg, rgba(255,255,255,0.075), rgba(255,255,255,0.025)) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.055), 0 8px 20px rgba(12,8,15,0.08) !important;
+}
+#root aside [class*="bg-[#302f27]"] > div:first-child {
+  border: 1px solid rgba(222, 179, 151, 0.18);
+  background: linear-gradient(145deg, #735443, #4b3545) !important;
+  color: #f0d0b6 !important;
+}
+#root aside [class*="bg-[#302f27]"] strong { color: #fff5ee !important; }
+#root aside [class*="bg-[#302f27]"] span { color: #c4aeb0 !important; }
+#root aside [class*="bg-[#302f27]"]::after {
+  content: "ERP";
+  position: absolute;
+  top: 9px;
+  right: 9px;
+  padding: 3px 6px;
+  border: 1px solid rgba(204, 168, 135, 0.25);
+  border-radius: 5px;
+  color: #dcbba4;
+  background: rgba(183, 131, 104, 0.10);
+  font-size: 7px;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+  opacity: 0;
+  transition: opacity 220ms ease;
+}
+#root aside[class*="w-[250px]"] [class*="bg-[#302f27]"]::after { opacity: 1; }
+#root aside[class*="w-[250px]"] [class*="bg-[#302f27]"] > div:last-child { padding-right: 32px; }
+#root aside nav p {
+  color: #b49ca8 !important;
+  font-size: 9px !important;
+  letter-spacing: 0.18em !important;
+}
+#root aside nav section > div > span {
+  height: 1px;
+  background: linear-gradient(90deg, rgba(204, 159, 139, 0.58), rgba(204, 159, 139, 0.06)) !important;
+}
+#root aside .group {
+  position: relative;
+  isolation: isolate;
+  border-radius: 12px !important;
+  color: #cdbfc8 !important;
+  transition: background 260ms ease, color 220ms ease, border-color 220ms ease, transform 300ms cubic-bezier(.2,.8,.2,1), box-shadow 260ms ease !important;
+}
+#root aside .group::before {
+  width: 2px;
+  inset: 8px auto 8px 0;
+  border-radius: 4px;
+  background: linear-gradient(180deg, #f1d4b6, #bc8f83) !important;
+  box-shadow: 0 0 10px rgba(222, 175, 149, 0.45);
+}
+#root aside .group:hover {
+  color: #fff8f2 !important;
+  border-color: rgba(220, 185, 166, 0.09) !important;
+  background: linear-gradient(100deg, rgba(222, 183, 164, 0.13), rgba(222, 183, 164, 0.035)) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.035) !important;
+  transform: translateX(3px) !important;
+}
+#root aside .group:hover > span:first-child svg { color: #ecc9ad !important; }
+#root aside .group > span:first-child svg { transition: color 200ms ease, transform 260ms cubic-bezier(.2,.8,.2,1); }
+#root aside .group:hover > span:first-child svg { transform: scale(1.08) rotate(-3deg); }
+#root aside a[aria-current="page"] {
+  color: #fff3e8 !important;
+  border-color: rgba(221, 177, 150, 0.24) !important;
+  background: linear-gradient(105deg, rgba(183, 128, 119, 0.31), rgba(119, 80, 104, 0.23) 62%, rgba(255,255,255,0.045)) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.075), 0 6px 18px rgba(12,8,15,0.12) !important;
+}
+#root aside a[aria-current="page"]::before { opacity: 1; transform: scaleY(1); }
+#root aside a[aria-current="page"] > span:first-child svg {
+  color: #f0c9a9 !important;
+  filter: drop-shadow(0 0 7px rgba(228, 179, 145, 0.25));
+}
+#root aside [class*="border-[#bca66e]"] {
+  border: 1px solid rgba(218, 170, 145, 0.65) !important;
+  background: linear-gradient(145deg, #725344, #463243) !important;
+  color: #ffe3cc !important;
+  box-shadow: 0 0 0 4px rgba(221, 181, 156, 0.055), 0 5px 13px rgba(0,0,0,0.2);
+}
+#root aside [aria-label="Logout"]:hover {
+  color: #ffc6ba !important;
+  background: rgba(191, 105, 105, 0.15) !important;
+}
+#root aside .border-t {
+  border-color: rgba(221, 185, 167, 0.14) !important;
+}
+
+/* --------------------------------------------------------------------------
+   Topbar: brand header, clear workspace identity and jewel-tone controls
+   -------------------------------------------------------------------------- */
+#root > div > main > header {
+  position: sticky;
+  min-height: 82px;
+  padding-inline: clamp(20px, 2.5vw, 42px) !important;
+  border-bottom: 1px solid rgba(224, 211, 204, 0.88) !important;
+  background: rgba(255, 252, 249, 0.88) !important;
+  box-shadow: 0 8px 28px rgba(54, 36, 49, 0.045) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(1.2);
+  backdrop-filter: blur(20px) saturate(1.2);
+}
+#root > div > main > header::after {
+  content: "" !important;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 1px;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent 0%, rgba(189,146,125,0.08) 10%, rgba(189,146,125,0.48) 52%, rgba(189,146,125,0.08) 90%, transparent 100%);
+}
+#root > div > main > header > div:first-child {
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 185px;
+  align-items: center;
+  gap: 12px;
+}
+#root > div > main > header > div:first-child::before {
+  content: "J";
+  display: grid;
+  width: 43px;
+  height: 43px;
+  flex: 0 0 43px;
+  place-items: center;
+  border: 1px solid rgba(181, 129, 111, 0.38);
+  border-radius: 13px;
+  color: #f5e4d8;
+  background: linear-gradient(145deg, #654657 0%, #3a2b3b 62%, #302335 100%);
+  box-shadow: 0 7px 16px rgba(65, 42, 59, 0.15), inset 0 1px 0 rgba(255,255,255,0.14);
+  font-family: Georgia, serif;
+  font-size: 22px;
+  font-style: italic;
+  line-height: 1;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+#root > div > main > header > div:first-child::after {
+  content: "JMS ATELIER\A JEWELLERY MANAGEMENT SUITE";
+  display: block;
+  color: #5c4a56;
+  white-space: pre;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1.65;
+  letter-spacing: 0.13em;
+}
+#root > div > main > header label {
+  width: clamp(190px, 18vw, 258px);
+  min-height: 42px;
+  border: 1px solid #e7dbd6 !important;
+  border-radius: 12px !important;
+  background: #faf6f3 !important;
+  box-shadow: inset 0 1px 2px rgba(65, 42, 59, 0.025);
+}
+#root > div > main > header label:focus-within {
+  width: clamp(210px, 19vw, 276px);
+  border-color: rgba(183, 131, 111, 0.72) !important;
+  background: #fff !important;
+  box-shadow: 0 0 0 4px rgba(189, 146, 125, 0.12), 0 5px 15px rgba(67, 44, 57, 0.04) !important;
+}
+#root > div > main > header label > svg { color: #9b7a79 !important; }
+#root > div > main > header label > span {
+  border: 1px solid #e7dbd6 !important;
+  border-radius: 5px;
+  color: #a18e8d !important;
+  background: #fff !important;
+}
+#root > div > main > header [aria-label="Notifications"] {
+  width: 42px;
+  height: 42px;
+  border: 1px solid #eadfda !important;
+  border-radius: 12px !important;
+  color: #685564 !important;
+  background: #fffdfb !important;
+  box-shadow: 0 3px 10px rgba(49, 33, 45, 0.035);
+}
+#root > div > main > header [aria-label="Notifications"]:hover {
+  border-color: #d8b7a8 !important;
+  color: #7e4d64 !important;
+  background: #f8efea !important;
+  box-shadow: 0 7px 18px rgba(91, 58, 75, 0.09) !important;
+}
+#root > div > main > header [aria-label="Notifications"] > span {
+  top: 8px;
+  right: 8px;
+  width: 7px;
+  height: 7px;
+  border-color: #fffdfb !important;
+  background: #ba806e !important;
+  box-shadow: 0 0 0 2px rgba(186,128,110,0.12);
+}
+#root > div > main > header [class*="rounded-[9px]"][class*="border-[#e9e6de]"]:not(button) {
+  min-height: 42px;
+  border: 1px solid #eadfda !important;
+  border-radius: 12px !important;
+  color: #756773 !important;
+  background: #fffdfb !important;
+}
+#root > div > main > header [class*="rounded-[9px]"][class*="border-[#e9e6de]"]:not(button) svg { color: #a57c73 !important; }
+#root > div > main > header [aria-label="User profile"] {
+  padding: 4px 5px 4px 8px;
+  border: 1px solid transparent;
+  border-radius: 13px;
+  transition: background 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+}
+#root > div > main > header [aria-label="User profile"]:hover {
+  border-color: #ecdfd8;
+  background: #faf5f2;
+  box-shadow: 0 4px 13px rgba(55, 35, 51, 0.045);
+}
+#root > div > main > header [aria-label="User profile"] > span:first-child {
+  border: 1px solid #c99e8a !important;
+  color: #704f5a !important;
+  background: linear-gradient(145deg, #f5e7dd, #ead5ca) !important;
+  box-shadow: 0 0 0 3px rgba(196, 146, 124, 0.08);
+}
+#root > div > main > header [aria-label="User profile"] strong { color: #493c49 !important; }
+#root > div > main > header [aria-label="User profile"] small { color: #9a8b94 !important; }
+#root > div > main > header [aria-label="User profile"] > svg { color: #9d838d; }
+
+/* --------------------------------------------------------------------------
+   Cards / data surfaces: porcelain, fine rose-metal borders, soft depth
+   -------------------------------------------------------------------------- */
+#root main article,
+#root main section[class*="rounded-xl"][class*="bg-white"],
+#root main section[class*="rounded-[14px]"][class*="bg-white"],
+#root main div[class*="rounded-xl"][class*="border"][class*="bg-white"],
+#root main div[class*="rounded-[14px]"][class*="border"][class*="bg-white"] {
+  border-color: #e9dfdb !important;
+  background: linear-gradient(155deg, #fffefd 0%, #fffdfb 70%, #fdf9f6 100%) !important;
+  box-shadow: var(--jms-shadow) !important;
+}
+#root main article:hover,
+#root main section[class*="rounded-xl"][class*="bg-white"]:hover,
+#root main section[class*="rounded-[14px]"][class*="bg-white"]:hover,
+#root main div[class*="rounded-xl"][class*="border"][class*="bg-white"]:hover,
+#root main div[class*="rounded-[14px]"][class*="border"][class*="bg-white"]:hover {
+  border-color: #dec9bf !important;
+  box-shadow: var(--jms-shadow-hover) !important;
+}
+#root main article > * { position: relative; }
+#root main article div[class*="rounded-[11px]"][class*="border"],
+#root main article div[class*="rounded-[10px]"][class*="border"],
+#root main section > div[class*="rounded-lg"][class*="border"] {
+  border-color: #eee5e0 !important;
+  background: linear-gradient(145deg, #fcf8f5, #faf6f3) !important;
+}
+#root main article div[class*="rounded-[11px]"][class*="border"]:hover,
+#root main article div[class*="rounded-[10px]"][class*="border"]:hover {
+  border-color: #dfc8bd !important;
+  background: #fffaf6 !important;
+}
+#root main :is(article, section) :is(div, span)[class*="rounded-"]:has(> svg:only-child) {
+  border-color: rgba(188, 144, 126, 0.16) !important;
+  background-color: #f6ebe5 !important;
+}
+#root main article:hover :is(div, span)[class*="rounded-"]:has(> svg:only-child) { background-color: #f2e2d9 !important; }
+#root main :is(article, section) :is(div, span)[class*="rounded-"]:has(> svg:only-child) > svg { color: #986f70 !important; }
+
+/* Accent bars and headline micro-labels. */
+#root main [class*="text-[#9a7837]"],
+#root main [class*="text-[#9b7847]"],
+#root main [class*="text-[#a58a50]"] { color: #986c67 !important; }
+#root main [class*="bg-[#f5f0e5]"],
+#root main [class*="bg-[#f5efdf]"] { background: #f5eae4 !important; }
+
+/* Buttons: dark plum primary, rose-metal secondary and restrained sheen. */
+#root main button:not(:disabled):not(aside *),
+#root main a[class*="rounded"] {
+  transition: transform 260ms cubic-bezier(.2,.8,.2,1), color 180ms ease, background 220ms ease, border-color 220ms ease, box-shadow 240ms ease !important;
+}
+#root main button:not(:disabled):not(aside *):hover,
+#root main a[class*="rounded"]:hover { transform: translateY(-2px) !important; }
+#root main button:not(:disabled):not(aside *):active,
+#root main a[class*="rounded"]:active { transform: translateY(0) scale(.975) !important; }
+#root main button[class*="bg-[#9a7837]" i],
+#root main button[class*="bg-[#9b7847]" i],
+#root main a[class*="bg-[#9a7837]" i],
+#root main a[class*="bg-[#9b7847]" i],
+#root main button[class*="bg-[#8f7138]" i] {
+  border: 1px solid #634555 !important;
+  border-radius: 11px !important;
+  color: #fff9f5 !important;
+  background: linear-gradient(115deg, #493446 0%, #69475a 54%, #493446 100%) !important;
+  box-shadow: 0 7px 16px rgba(73, 52, 70, 0.18), inset 0 1px 0 rgba(255,255,255,0.12) !important;
+}
+#root main button[class*="bg-[#9a7837]" i]:hover,
+#root main button[class*="bg-[#9b7847]" i]:hover,
+#root main a[class*="bg-[#9a7837]" i]:hover,
+#root main a[class*="bg-[#9b7847]" i]:hover,
+#root main button[class*="bg-[#8f7138]" i]:hover {
+  border-color: #986d72 !important;
+  background: linear-gradient(115deg, #5c3e53 0%, #80576a 54%, #5c3e53 100%) !important;
+  box-shadow: 0 10px 22px rgba(73, 52, 70, 0.23), inset 0 1px 0 rgba(255,255,255,0.16) !important;
+}
+#root main button[class*="border"][class*="bg-white"]:not(:disabled):hover,
+#root .fixed button[class*="border"][class*="bg-white"]:not(:disabled):hover {
+  border-color: #d8b9aa !important;
+  color: #67485a !important;
+  background: #fff9f5 !important;
+  box-shadow: 0 6px 16px rgba(69, 45, 62, 0.07) !important;
+}
+#root main button:not(:disabled):not(aside *) > svg { transition: transform 280ms cubic-bezier(.2,.8,.2,1), color 180ms ease !important; }
+
+/* Inputs and search fields. */
+#root main :is(input, select, textarea):not([type="checkbox"], [type="radio"], [type="range"]) {
+  color: #4e424d !important;
+  border-color: #dfd1ca !important;
+  border-radius: 10px;
+  background-color: #fffdfb !important;
+}
+#root main :is(input, select, textarea):not([type="checkbox"], [type="radio"], [type="range"]):hover { border-color: #cdb0a5 !important; }
+#root main :is(input, select, textarea):not([type="checkbox"], [type="radio"], [type="range"]):focus {
+  border-color: #b98579 !important;
+  box-shadow: 0 0 0 4px rgba(189, 146, 125, 0.13) !important;
+}
+#root main :is(input, textarea)::placeholder { color: #ad9fa3 !important; }
+#root main input[type="checkbox"],
+#root main input[type="radio"] { accent-color: #80576a; }
+
+/* Tables: muted mauve header, crisp row separators and soft hover wash. */
+#root main thead th {
+  border-color: #e9dfdb !important;
+  color: #806d7a !important;
+  background: #f8f1ed !important;
+  letter-spacing: 0.09em;
+}
+#root main tbody tr:hover { background: #fcf6f2 !important; }
+#root main tbody td { border-color: #f0e8e4 !important; color: #554b55; }
+#root main tbody tr:hover td { color: #3f3440; }
+
+/* Charts and floating details inherit the new palette. */
+#root main .recharts-cartesian-grid line { stroke: #eee4df !important; }
+#root main .recharts-text { fill: #8a7a85 !important; }
+#root main .recharts-tooltip-wrapper > div {
+  border: 1px solid #eadbd4 !important;
+  border-radius: 12px !important;
+  background: rgba(255, 252, 249, 0.97) !important;
+  box-shadow: 0 12px 30px rgba(54, 36, 49, 0.13) !important;
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+#root .fixed [role="dialog"],
+#root .fixed [class*="rounded-xl"][class*="bg-white"] {
+  border-color: #e8dcd6 !important;
+  box-shadow: 0 24px 70px rgba(39, 27, 40, 0.18) !important;
+}
+
+/* --------------------------------------------------------------------------
+   Custom cursor: polished rose-gold stone with plum orbit.
+   Keep the pointer FX DOM, but deliberately suppress the busy sparkle trail.
+   -------------------------------------------------------------------------- */
+.fx-root { display: none !important; }
+.fx-cursor-ring,
+.fx-cursor-dot {
+  display: block !important;
+  z-index: 2147483000 !important;
+  pointer-events: none !important;
+}
+.fx-cursor-ring > i {
+  width: 36px;
+  height: 36px;
+  padding: 1.4px;
+  border-radius: 50%;
+  background: conic-gradient(
+    from var(--angle),
+    rgba(189, 146, 125, 0) 0%,
+    #f7e3d2 15%,
+    #b98378 35%,
+    #64475f 52%,
+    rgba(189, 146, 125, 0) 70%,
+    #e9c8ad 88%,
+    rgba(189, 146, 125, 0) 100%
+  ) !important;
+  filter: drop-shadow(0 2px 5px rgba(90, 57, 76, 0.16));
+  animation: atelier-cursor-orbit 3.4s linear infinite !important;
+  transition: width 360ms cubic-bezier(.2,.8,.2,1), height 360ms cubic-bezier(.2,.8,.2,1), border-radius 360ms ease, scale 220ms ease !important;
+}
+.fx-cursor-dot > i {
+  width: 8px;
+  height: 8px;
+  border: 1px solid rgba(255, 245, 237, 0.92);
+  border-radius: 2px;
+  rotate: 45deg;
+  background: linear-gradient(145deg, #fff1e4 0%, #d8a88f 48%, #85596b 100%) !important;
+  box-shadow: 0 0 0 2px rgba(143, 93, 111, 0.10), 0 0 14px 3px rgba(187, 132, 116, 0.62) !important;
+  transition: scale 280ms cubic-bezier(.2,.8,.2,1), background 220ms ease, box-shadow 220ms ease !important;
+}
+html.fx-cursor-on,
+html.fx-cursor-on * { cursor: none !important; }
+html.fx-cursor-on .fx-cursor-ring,
+html.fx-cursor-on .fx-cursor-dot { opacity: 1 !important; }
+html.fx-cursor-on.fx-cursor-away .fx-cursor-ring,
+html.fx-cursor-on.fx-cursor-away .fx-cursor-dot { opacity: 0 !important; }
+html[data-fx-cursor="link"] .fx-cursor-ring > i {
+  width: 50px;
+  height: 50px;
+  border-radius: 15px;
+  animation: atelier-cursor-orbit 2.5s linear infinite, ring-diamond 7s linear infinite !important;
+}
+html[data-fx-cursor="link"] .fx-cursor-dot > i {
+  scale: 2.1;
+  background: radial-gradient(circle, #fff3e9 0%, #dbad97 47%, rgba(137, 88, 111, 0.72) 100%) !important;
+  box-shadow: 0 0 22px 6px rgba(187, 132, 116, 0.48) !important;
+}
+html[data-fx-cursor="text"] .fx-cursor-ring > i {
+  width: 3px;
+  height: 28px;
+  padding: 1px;
+  border-radius: 4px;
+  background: linear-gradient(180deg, #eacbb5, #946678, #eacbb5) !important;
+  animation: none !important;
+}
+html[data-fx-cursor="text"] .fx-cursor-dot > i { scale: 0; }
+html[data-fx-cursor="disabled"] .fx-cursor-ring > i { background: conic-gradient(#b66e70, #e3b5a8, #b66e70) !important; }
+html[data-fx-press] .fx-cursor-ring > i { scale: 0.78; }
+html[data-fx-press] .fx-cursor-dot > i { scale: 1.7; }
+.fx-sparks { display: none !important; }
+#root button,
+#root a,
+#root select,
+#root [role="button"] { cursor: pointer; }
+
+/* Keep a restrained progress thread, recoloured to match the new system. */
+.fx-progress { height: 2px !important; opacity: 0.88; }
+.fx-progress b {
+  background: linear-gradient(90deg, #76536e, #d4a58e, #f0d9c4, #a9797d) !important;
+  background-size: 220% 100% !important;
+  box-shadow: 0 0 9px rgba(173, 119, 119, 0.38) !important;
+  animation: progress-shimmer 5s linear infinite !important;
+}
+
+/* Intentional motion: small entrance, hover lift, slow jewel breathing. */
+@keyframes atelier-gem-breathe {
+  0%, 100% { filter: drop-shadow(0 0 1px rgba(225, 181, 155, 0.1)); transform: translateY(0); }
+  50% { filter: drop-shadow(0 0 7px rgba(225, 181, 155, 0.35)); transform: translateY(-1px); }
+}
+@keyframes atelier-cursor-orbit {
+  from { --angle: 0deg; }
+  to { --angle: 360deg; }
+}
+
+/* Reduced motion and touch devices retain the native cursor and no pointer FX. */
+@media (hover: none), (pointer: coarse) {
+  .fx-cursor-ring, .fx-cursor-dot, .fx-sparks { display: none !important; }
+  html.fx-cursor-on, html.fx-cursor-on * { cursor: auto !important; }
+}
+@media (max-width: 1100px) {
+  #root > div > main > header > div:first-child::after { font-size: 9px; }
+}
+@media (max-width: 768px) {
+  #root > div > main > header { min-height: 72px; padding-inline: 16px !important; }
+  #root > div > main > header > div:first-child { min-width: 0; flex-basis: 100%; }
+  #root > div > main > header > div:first-child::before { width: 36px; height: 36px; flex-basis: 36px; font-size: 19px; }
+  #root > div > main > header > div:first-child::after { font-size: 9px; }
+  #root > div > main > header label,
+  #root > div > main > header label:focus-within { width: 100%; }
+  #root main > div.w-full { padding: 22px 16px 32px; }
+}
+@media (max-width: 480px) {
+  #root > div > main > header > div:first-child::after { font-size: 8px; letter-spacing: .09em; }
+  #root main > div.w-full { padding-inline: 13px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fx-cursor-ring, .fx-cursor-dot { display: none !important; }
+  html.fx-cursor-on, html.fx-cursor-on * { cursor: auto !important; }
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
