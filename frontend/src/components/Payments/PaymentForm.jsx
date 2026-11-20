@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { X, CreditCard, IndianRupee } from "lucide-react";
+import Portal from "../ui/Portal";
 
 const initialForm = {
   customer: "",
@@ -72,6 +73,7 @@ const PaymentForm = ({
     "w-full rounded-lg border border-[#e8e5dd] bg-white px-3 py-2.5 text-sm text-gray-700 outline-none transition focus:border-[#9a7837] focus:ring-2 focus:ring-[#9a7837]/10 disabled:bg-gray-50";
 
   return (
+    <Portal>
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-3 sm:p-5"
       onMouseDown={(e) => {
@@ -280,6 +282,7 @@ const PaymentForm = ({
         </form>
       </div>
     </div>
+    </Portal>
   );
 };
 

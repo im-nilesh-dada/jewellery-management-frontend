@@ -1,0 +1,289 @@
+/* ============================================================================
+   JMS · SAPPHIRE & CHAMPAGNE — final visual layer (loaded last)
+   Colours + full-screen modal system only. No markup / logic changes.
+   Palette: midnight sapphire (nav, primary), champagne gold (accent),
+            ice-lavender / mint / blush aurora canvas (instead of plain white).
+   ============================================================================ */
+
+:root {
+  --jms-ink: #121a3a;
+  --jms-ink-soft: #2b3560;
+  --jms-muted: #5d6a92;
+  --jms-muted-light: #8e99ba;
+  --jms-canvas: #e9eefb;
+  --jms-surface: #ffffff;
+  --jms-surface-soft: #f2f5fd;
+  --jms-line: #d9e1f5;
+  --jms-line-strong: #c2cdec;
+  --jms-gold: #d4a94e;
+  --jms-gold-deep: #8a6a1f;
+  --jms-gold-pale: #fbf1d6;
+  --jms-forest: #0e1736;
+  --jms-forest-soft: #172250;
+  --jms-plum: #1e2c63;
+  --jms-rose: #e3c07a;
+  --jms-sapphire: #2f4bd0;
+  --jms-sapphire-deep: #1d2f94;
+  --jms-teal: #12a39a;
+  --jms-shadow: 0 1px 2px rgba(18, 30, 80, 0.05), 0 12px 30px -8px rgba(40, 60, 150, 0.14);
+  --jms-shadow-hover: 0 6px 16px rgba(18, 30, 80, 0.08), 0 26px 50px -12px rgba(40, 60, 150, 0.25);
+  --color-gold: #8a6a1f;
+  --color-gold-dark: #6f5316;
+}
+
+/* ---- Canvas: a rich pastel aurora instead of flat white -------------------- */
+html:root {
+  min-height: 100%;
+  background: none;
+  background-color: #e9eefb;
+  background-image:
+    radial-gradient(46rem 30rem at 38% -4%, rgba(120, 148, 255, 0.40), transparent 65%),
+    radial-gradient(34rem 24rem at 100% 0%, rgba(245, 207, 130, 0.26), transparent 65%),
+    radial-gradient(44rem 30rem at 100% 100%, rgba(120, 220, 205, 0.36), transparent 65%),
+    radial-gradient(44rem 30rem at 30% 105%, rgba(196, 160, 245, 0.34), transparent 65%),
+    linear-gradient(180deg, #edf1fe 0%, #e4eafb 100%);
+  background-attachment: fixed;
+}
+body {
+  min-height: 100vh;
+  color: var(--jms-ink);
+  background: transparent !important;
+}
+body.__unused {
+  background:
+    radial-gradient(60rem 38rem at 0% 0%, rgba(125, 150, 255, 0.34), transparent 62%),
+    radial-gradient(52rem 34rem at 100% 4%, rgba(245, 207, 130, 0.38), transparent 62%),
+    radial-gradient(54rem 38rem at 92% 100%, rgba(130, 220, 205, 0.34), transparent 62%),
+    radial-gradient(48rem 34rem at 8% 100%, rgba(205, 170, 245, 0.30), transparent 62%),
+    linear-gradient(180deg, #eef2fd 0%, #e7ecfa 100%) !important;
+  background-attachment: fixed !important;
+}
+#root, #root > div.min-h-screen, #root main { background: transparent !important; }
+
+/* ---- Sidebar: deep sapphire with gold edge ------------------------------- */
+#root aside {
+  background:
+    radial-gradient(ellipse at 0% 0%, rgba(86, 120, 255, 0.28), transparent 48%),
+    radial-gradient(ellipse at 100% 70%, rgba(212, 169, 78, 0.12), transparent 50%),
+    linear-gradient(180deg, #14205a 0%, #0f1948 48%, #0a1236 100%) !important;
+  border-right: 1px solid rgba(212, 169, 78, 0.28) !important;
+  box-shadow: 10px 0 40px rgba(10, 18, 54, 0.28) !important;
+}
+#root aside::before {
+  background: linear-gradient(180deg, transparent 2%, rgba(235, 200, 120, 0.85) 20%, rgba(212, 169, 78, 0.25) 75%, transparent 100%) !important;
+}
+
+/* ---- Top bar: frosted, tinted ------------------------------------------- */
+#root > div > main > header {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.86), rgba(240, 244, 255, 0.78)) !important;
+  border-bottom: 1px solid var(--jms-line) !important;
+}
+
+/* ---- Cards: tinted glass, with a faint colour wash ----------------------- */
+#root main article,
+#root main :is(section, div)[class*="bg-white"][class*="rounded-"][class*="border"] {
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.96) 0%, rgba(243, 247, 255, 0.92) 55%, rgba(253, 247, 232, 0.90) 100%) !important;
+  border-color: var(--jms-line) !important;
+  box-shadow: var(--jms-shadow) !important;
+}
+#root main thead, #root main thead tr, #root main thead th {
+  background: linear-gradient(180deg, #eaf0ff, #e1e9fc) !important;
+  color: #33407a !important;
+}
+#root main tbody tr:nth-child(even) { background: rgba(232, 238, 255, 0.35); }
+#root main tbody tr:hover { background: rgba(212, 169, 78, 0.10) !important; }
+
+/* ---- Primary buttons: sapphire gradient with gold glint ------------------ */
+#root main button[class*="bg-[#9a7837]"],
+body > .fixed.inset-0 button[class*="bg-[#9a7837]"],
+body > .fixed.inset-0 button[class*="bg-[#b59651]"],
+body > .fixed.inset-0 button[type="submit"]:not([class*="bg-white"]) {
+  background: linear-gradient(135deg, #3856e0 0%, #2338a8 100%) !important;
+  color: #fff !important;
+  border: 1px solid rgba(212, 169, 78, 0.55) !important;
+  box-shadow: 0 8px 20px -8px rgba(35, 56, 168, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
+}
+#root main button[class*="bg-[#9a7837]"]:hover,
+body > .fixed.inset-0 button[class*="bg-[#9a7837]"]:hover,
+body > .fixed.inset-0 button[class*="bg-[#b59651]"]:hover {
+  background: linear-gradient(135deg, #4a68f0 0%, #2a43c2 100%) !important;
+  transform: translateY(-1px);
+}
+
+/* Gold text that used to be brown/rose reads as rich gold */
+#root main [class*="text-[#9a7837]"],
+#root main [class*="text-[#9B7847]"],
+#root main [class*="text-[#98732d]"] { color: #8a6a1f !important; }
+
+/* ---- Scrollbar, selection, focus ---------------------------------------- */
+* { scrollbar-color: #8fa2e6 transparent; }
+::-webkit-scrollbar-thumb,
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #8ea3ee, #4a62cf);
+  background-clip: padding-box;
+}
+::selection { color: #0e1736; background: #f3dfa6; }
+:focus-visible {
+  outline: 2px solid var(--jms-sapphire);
+  box-shadow: 0 0 0 5px rgba(47, 75, 208, 0.18);
+}
+
+/* ============================================================================
+   MODALS — rendered through a portal into <body>, so they always span the
+   ENTIRE viewport (no side gaps, no white frame). Backdrop is edge to edge.
+   ============================================================================ */
+body > .fixed.inset-0 {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  margin: 0 !important;
+  border: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  overflow-y: auto !important;
+  padding: clamp(12px, 3vw, 32px) !important;
+  background:
+    radial-gradient(70% 60% at 20% 10%, rgba(70, 100, 240, 0.40), transparent 70%),
+    radial-gradient(60% 55% at 85% 90%, rgba(212, 169, 78, 0.28), transparent 70%),
+    rgba(9, 15, 45, 0.78) !important;
+  -webkit-backdrop-filter: blur(8px) saturate(1.2);
+  backdrop-filter: blur(8px) saturate(1.2);
+  animation: sap-veil 220ms ease-out both;
+  z-index: 2000 !important;
+}
+body > .fixed.inset-0 > div {
+  position: relative;
+  margin-block: auto !important;
+  border: 1px solid rgba(212, 169, 78, 0.45) !important;
+  border-radius: 20px !important;
+  background: linear-gradient(180deg, #ffffff 0%, #f3f6ff 100%) !important;
+  box-shadow: 0 40px 90px -20px rgba(4, 8, 36, 0.75), 0 0 0 6px rgba(255, 255, 255, 0.05) !important;
+  animation: sap-pop 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  color: var(--jms-ink);
+}
+/* gold hairline across the top of every dialog */
+body > .fixed.inset-0 > div::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 3px;
+  border-radius: 20px 20px 0 0;
+  background: linear-gradient(90deg, #2f4bd0, #d4a94e 50%, #12a39a);
+  z-index: 2;
+  pointer-events: none;
+}
+body > .fixed.inset-0 > div > div:first-child,
+body > .fixed.inset-0 [class*="sticky"] {
+  background: linear-gradient(180deg, #eef2ff, #e6ecff) !important;
+  border-color: var(--jms-line) !important;
+}
+body > .fixed.inset-0 h2, body > .fixed.inset-0 h3 { color: var(--jms-ink) !important; }
+body > .fixed.inset-0 label { color: #34407a !important; }
+body > .fixed.inset-0 :is(input, select, textarea) {
+  background: #f6f8ff !important;
+  border: 1px solid #cdd7f2 !important;
+  border-radius: 10px !important;
+  color: var(--jms-ink) !important;
+  transition: border-color 160ms, box-shadow 160ms, background 160ms;
+}
+body > .fixed.inset-0 :is(input, select, textarea):focus {
+  background: #fff !important;
+  border-color: var(--jms-sapphire) !important;
+  box-shadow: 0 0 0 4px rgba(47, 75, 208, 0.16) !important;
+  outline: none;
+}
+body > .fixed.inset-0 :is(input, select, textarea)::placeholder { color: #9aa5c7; }
+body > .fixed.inset-0 [class*="border-t"][class*="bg-[#fdfcf9]"],
+body > .fixed.inset-0 [class*="bg-[#fdfcf9]"] {
+  background: linear-gradient(180deg, #eef2ff, #e8eeff) !important;
+  border-color: var(--jms-line) !important;
+}
+body > .fixed.inset-0 button[class*="bg-white"] {
+  background: #fff !important;
+  border: 1px solid #c8d3f0 !important;
+  color: #2b3560 !important;
+}
+body > .fixed.inset-0 button[class*="bg-white"]:hover { background: #eef2ff !important; }
+body > .fixed.inset-0 button[aria-label^="Close"]:hover {
+  background: #fde8e7 !important; color: #b23a32 !important;
+}
+body > .fixed.inset-0 [class*="border-[#ebe8e1]"],
+body > .fixed.inset-0 [class*="border-[#e5e1d8]"],
+body > .fixed.inset-0 [class*="border-[#e9e3d8]"] { border-color: var(--jms-line) !important; }
+body > .fixed.inset-0 [class*="bg-[#f5f0e5]"],
+body > .fixed.inset-0 [class*="bg-[#f5efdf]"],
+body > .fixed.inset-0 [class*="bg-[#faf9f6]"],
+body > .fixed.inset-0 [class*="bg-[#faf8f3]"] { background: #eef2ff !important; }
+body > .fixed.inset-0 [class*="text-[#9a7837]"] { color: #8a6a1f !important; }
+
+/* Lock page scroll while a dialog is open so the backdrop never shows a gutter */
+html:has(body > .fixed.inset-0) { overflow: hidden !important; scrollbar-gutter: auto !important; }
+body:has(> .fixed.inset-0) { overflow: hidden !important; }
+
+@keyframes sap-veil { from { opacity: 0; } to { opacity: 1; } }
+@keyframes sap-pop {
+  from { opacity: 0; transform: translateY(16px) scale(0.97); }
+  to   { opacity: 1; transform: none; }
+}
+@media print {
+  body > .fixed.inset-0 { position: static !important; background: #fff !important; backdrop-filter: none; }
+}
+
+/* ============================================================================
+   LOGIN — full-bleed split screen (no outer frame / margins)
+   ============================================================================ */
+#root main[class*="h-dvh"] {
+  padding: 0 !important;
+  background: transparent !important;
+}
+#root main[class*="h-dvh"] > div {
+  max-width: none !important;
+  width: 100% !important;
+  border-radius: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  transform: none !important;
+  animation: none !important;
+}
+/* left: sapphire backdrop (also the fallback while the photo loads) */
+#root main[class*="h-dvh"] section:first-child {
+  background:
+    radial-gradient(70% 60% at 20% 10%, rgba(90, 120, 255, 0.45), transparent 70%),
+    linear-gradient(160deg, #1b2a78 0%, #0f1948 55%, #0a1236 100%) !important;
+}
+#root main[class*="h-dvh"] section:first-child > div.absolute.inset-0 {
+  background: linear-gradient(to top, rgba(8, 14, 48, 0.82), rgba(20, 34, 110, 0.25) 55%, rgba(30, 50, 150, 0.30)) !important;
+}
+/* right: aurora panel */
+#root main[class*="h-dvh"] section:last-child {
+  background:
+    radial-gradient(40rem 26rem at 90% 0%, rgba(245, 207, 130, 0.28), transparent 65%),
+    radial-gradient(40rem 28rem at 0% 100%, rgba(130, 220, 205, 0.30), transparent 65%),
+    radial-gradient(36rem 26rem at 50% 40%, rgba(150, 170, 255, 0.26), transparent 65%),
+    linear-gradient(180deg, #f2f5ff, #e6ecfc) !important;
+}
+#root main[class*="h-dvh"] section:last-child input {
+  background: #fff !important;
+  border: 1px solid #cdd7f2 !important;
+  border-radius: 12px !important;
+  color: var(--jms-ink) !important;
+}
+#root main[class*="h-dvh"] section:last-child input:focus {
+  border-color: var(--jms-sapphire) !important;
+  box-shadow: 0 0 0 4px rgba(47, 75, 208, 0.16) !important;
+}
+#root main[class*="h-dvh"] section:last-child label { color: #34407a !important; }
+#root main[class*="h-dvh"] section:last-child button[type="submit"],
+#root main[class*="h-dvh"] section:last-child button[class*="bg-[#9a7837]"] {
+  background: linear-gradient(135deg, #3856e0 0%, #2338a8 100%) !important;
+  border: 1px solid rgba(212, 169, 78, 0.55) !important;
+  color: #fff !important;
+  box-shadow: 0 12px 26px -10px rgba(35, 56, 168, 0.75), inset 0 1px 0 rgba(255,255,255,.25) !important;
+}

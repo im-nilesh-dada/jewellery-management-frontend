@@ -10,6 +10,7 @@ import {
   ReceiptText,
 } from "lucide-react";
 import CustomerStatusBadge from "./CustomerStatusBadge";
+import Portal from "../ui/Portal";
 
 const formatCurrency = (amount) =>
   new Intl.NumberFormat("en-IN", {
@@ -74,6 +75,7 @@ const CustomerDetailsModal = ({ customer, onClose }) => {
   ).length;
 
   return (
+    <Portal>
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-3 sm:p-5"
       onMouseDown={(event) => {
@@ -320,6 +322,7 @@ const CustomerDetailsModal = ({ customer, onClose }) => {
         </div>
       </div>
     </div>
+    </Portal>
   );
 };
 

@@ -4,6 +4,7 @@ import { ArrowRight, CalendarDays, Package, UserRound, X } from "lucide-react";
 import OrderStatusBadge from "./OrderStatusBadge";
 import { nextStatus } from "../../data/mockOrderData";
 import { currency, formatDate, getTotal } from "../../utils/orderUtils";
+import Portal from "../ui/Portal";
 
 function OrderDetailsModal({ order, onClose, onAdvance, onCancel }) {
   useEffect(() => {
@@ -27,6 +28,7 @@ function OrderDetailsModal({ order, onClose, onAdvance, onCancel }) {
   const total = order.total ?? getTotal(items);
 
   return (
+    <Portal>
     <div
       className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/40 p-4"
       onMouseDown={(event) => {
@@ -217,6 +219,7 @@ function OrderDetailsModal({ order, onClose, onAdvance, onCancel }) {
         </div>
       </div>
     </div>
+    </Portal>
   );
 }
 

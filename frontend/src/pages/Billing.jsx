@@ -10,6 +10,7 @@ import {
   X,
   Printer,
 } from "lucide-react";
+import Portal from "../components/ui/Portal";
 
 const initialInvoices = [
   {
@@ -463,6 +464,7 @@ export default function Billing() {
 
       {/* Create / Edit invoice modal */}
       {showForm && (
+        <Portal>
         <div
           className={modalOverlayClass}
           onMouseDown={(event) => {
@@ -632,10 +634,12 @@ export default function Billing() {
             </form>
           </section>
         </div>
+        </Portal>
       )}
 
       {/* Invoice preview modal */}
       {selectedInvoice && (
+        <Portal>
         <div
           className={`${modalOverlayClass} print:static print:block print:bg-white print:p-0`}
           onMouseDown={(event) => {
@@ -771,6 +775,7 @@ export default function Billing() {
             </button>
           </section>
         </div>
+        </Portal>
       )}
     </div>
   );

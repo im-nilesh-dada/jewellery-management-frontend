@@ -2,7 +2,7 @@
 /* Main application layout */
 .app-shell {
   min-height: 100vh;
-  background: #faf9f6;
+  background: transparent;
 }
 
 /* Main content beside the sidebar */

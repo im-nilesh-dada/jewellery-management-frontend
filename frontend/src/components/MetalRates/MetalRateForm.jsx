@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
+import Portal from "../ui/Portal";
 
 const initialForm = {
   metalType: "Gold",
@@ -136,6 +137,7 @@ function MetalRateForm({ rate, rates, onClose, onSubmit, saving }) {
   };
 
   return (
+    <Portal>
     <div
       className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/40 p-4"
       onMouseDown={(event) => {
@@ -324,6 +326,7 @@ function MetalRateForm({ rate, rates, onClose, onSubmit, saving }) {
         </form>
       </div>
     </div>
+    </Portal>
   );
 }
 

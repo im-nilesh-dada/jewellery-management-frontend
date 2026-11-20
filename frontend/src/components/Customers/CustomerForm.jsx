@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
+import Portal from "../ui/Portal";
 
 const emptyForm = {
   name: "",
@@ -102,6 +103,7 @@ const CustomerForm = ({
   };
 
   return (
+    <Portal>
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-3 sm:p-5"
       onMouseDown={(event) => {
@@ -317,6 +319,7 @@ const CustomerForm = ({
         </form>
       </div>
     </div>
+    </Portal>
   );
 };
 

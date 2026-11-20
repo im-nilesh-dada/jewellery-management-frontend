@@ -11,6 +11,7 @@ import {
   X,
   SlidersHorizontal,
 } from "lucide-react";
+import Portal from "../components/ui/Portal";
 
 const initialInventory = [
   {
@@ -494,6 +495,7 @@ function Inventory() {
 
       {/* Record movement modal */}
       {showMovementForm && (
+        <Portal>
         <div
           className="fixed inset-0 z-[1000] flex items-center justify-center overflow-y-auto bg-[#1c1b17]/55 p-6 max-[480px]:items-start max-[480px]:p-3"
           onMouseDown={(event) => {
@@ -625,10 +627,12 @@ function Inventory() {
             </form>
           </section>
         </div>
+        </Portal>
       )}
 
       {/* Movement history modal */}
       {showHistory && (
+        <Portal>
         <div
           className="fixed inset-0 z-[1000] flex items-center justify-center overflow-y-auto bg-[#1c1b17]/55 p-6 max-[480px]:items-start max-[480px]:p-3"
           onMouseDown={(event) => {
@@ -721,6 +725,7 @@ function Inventory() {
             </div>
           </section>
         </div>
+        </Portal>
       )}
     </section>
   );

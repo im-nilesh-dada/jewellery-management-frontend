@@ -3,6 +3,7 @@ import { Plus, Trash2, X } from "lucide-react";
 
 import { catalog, customers } from "../../data/mockOrderData";
 import { currency, getTotal } from "../../utils/orderUtils";
+import Portal from "../ui/Portal";
 
 const inputClass =
   "mt-1.5 h-10 w-full rounded-lg border border-[#e5e1d8] bg-white px-3 text-sm text-[#292821] outline-none transition placeholder:text-gray-400 focus:border-[#9a7837]";
@@ -122,6 +123,7 @@ function OrderModal({ onClose, onCreate, saving = false }) {
   };
 
   return (
+    <Portal>
     <div
       className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/40 p-4"
       onMouseDown={(event) => {
@@ -378,6 +380,7 @@ function OrderModal({ onClose, onCreate, saving = false }) {
         </form>
       </div>
     </div>
+    </Portal>
   );
 }
 
